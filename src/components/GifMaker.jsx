@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import GIF from 'gif.js';
+import heic2any from 'heic2any';
 import DropZone from './DropZone';
 import FolderUpload from './FolderUpload';
 
@@ -11,12 +12,19 @@ const formatSize = (bytes) => {
   return (bytes / 1048576).toFixed(2) + ' MB';
 };
 
+const isHeic = (file) => {
+  const name = file.name.toLowerCase();
+  return name.endsWith('.heic') || name.endsWith('.heif') ||
+         file.type === 'image/heic' || file.type === 'image/heif';
+};
+
 const GifMaker = () => {
   const [frames, setFrames] = useState([]);
   const [delay, setDelay] = useState(200);
   const [gifUrl, setGifUrl] = useState(null);
   const [gifSize, setGifSize] = useState(0);
   const [processing, setProcessing] = useState(false);
+  const [loadingFrames, setLoadingFrames] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
 
@@ -25,19 +33,32 @@ const GifMaker = () => {
   }, [gifUrl]);
 
   const handleFiles = async (files) => {
-    const loaded = [];
-    for (const file of files) {
-      const url = await new Promise((res, rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result);
-        r.onerror = rej;
-        r.readAsDataURL(file);
-      });
-      loaded.push({ url, name: file.name, size: file.size });
-    }
-    setFrames(loaded);
-    setGifUrl(null);
+    setLoadingFrames(true);
     setError(null);
+    const loaded = [];
+    try {
+      for (const file of files) {
+        let blob = file;
+        if (isHeic(file)) {
+          const converted = await heic2any({ blob: file, toType: 'image/png', quality: 1 });
+          blob = Array.isArray(converted) ? converted[0] : converted;
+        }
+
+        const url = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(r.result);
+          r.onerror = rej;
+          r.readAsDataURL(blob);
+        });
+        loaded.push({ url, name: file.name, size: file.size });
+      }
+      setFrames(loaded);
+      setGifUrl(null);
+    } catch (err) {
+      setError("Failed to load frames: " + err.message);
+    } finally {
+      setLoadingFrames(false);
+    }
   };
 
   const removeFrame = (idx) => {
@@ -118,12 +139,15 @@ const GifMaker = () => {
   return (
     <div>
       <div style={{ marginBottom: '1.5rem' }}>
-        <DropZone onFiles={handleFiles} maxFiles={99999} label="Drop images to use as GIF frames" />
+        <DropZone onFiles={handleFiles} maxFiles={99999} label="Drop images to use as GIF frames" accept="image/*,.heic,.heif" />
         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
           <p style={{ marginBottom: '0.5rem', color: 'var(--text2)', fontSize: '0.85rem' }}>— OR —</p>
           <FolderUpload onFiles={handleFiles} />
         </div>
       </div>
+      
+      {loadingFrames && <p style={{ textAlign: 'center', color: 'var(--teal)' }}>Loading and converting frames... please wait.</p>}
+      
       {frames.length > 0 && (
         <>
           <div className="frame-list">
