@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Tools from './components/Tools';
 import UniversalConverter from './components/UniversalConverter';
 import GifMaker from './components/GifMaker';
+import PdfUnlocker from './components/PdfUnlocker';
 import About from './components/About';
 import Privacy from './components/Privacy';
 import Contact from './components/Contact';
@@ -25,6 +26,7 @@ const App = () => (
       <Route path="/tools"   element={<Tools />}>
         <Route path="converter" element={<UniversalConverter />} />
         <Route path="gif" element={<GifMaker />} />
+        <Route path="pdf" element={<PdfUnlocker />} />
       </Route>
       <Route path="/about"   element={<About />} />
       <Route path="/privacy" element={<Privacy />} />

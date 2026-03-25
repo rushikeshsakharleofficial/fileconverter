@@ -15,7 +15,8 @@ const Home = () => (
       <div className="features-grid">
         {[
           { icon: '🔄', title: 'Universal Converter', desc: 'Convert any image format to any other — PNG, JPG, WebP, BMP, AVIF, ICO and more.', link: 'converter' },
-          { icon: '🎞️', title: 'GIF Maker', desc: 'Upload 2–10 images and create animated GIFs with custom frame delays.', link: 'gif' },
+          { icon: '🎞️', title: 'GIF Maker', desc: 'Upload images and create animated GIFs with custom frame delays.', link: 'gif' },
+          { icon: '🔓', title: 'PDF Unlocker', desc: 'Remove passwords from encrypted PDFs securely in your browser.', link: 'pdf' },
           { icon: '📐', title: 'Custom Resize', desc: 'Set exact pixel dimensions (W×H) before converting. Live preview updates instantly.', link: 'converter' },
           { icon: '🔒', title: '100% Private', desc: 'Nothing is uploaded anywhere. All processing via Canvas API in your browser.', link: 'converter' }
         ].map((f, i) => (
