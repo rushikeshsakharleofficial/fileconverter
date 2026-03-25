@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -15,7 +15,7 @@ const ScrollToTop = () => {
 };
 
 const App = () => (
-  <HashRouter>
+  <BrowserRouter>
     <ScrollToTop />
     <Navbar />
     <Routes>
@@ -26,7 +26,7 @@ const App = () => (
       <Route path="/contact" element={<Contact />} />
     </Routes>
     <Footer />
-  </HashRouter>
+  </BrowserRouter>
 );
 
 export default App;
