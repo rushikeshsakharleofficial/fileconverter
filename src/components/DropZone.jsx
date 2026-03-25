@@ -5,9 +5,23 @@ const DropZone = ({ onFiles, multiple = true, accept = 'image/*', maxFiles = 999
   const inputRef = useRef();
 
   const handleFiles = (fileList) => {
+    const acceptedTypes = accept.split(',').map(t => t.trim());
     const files = Array.from(fileList).filter(f => {
+      const type = f.type;
       const name = f.name.toLowerCase();
-      return f.type.startsWith('image/') || name.endsWith('.heic') || name.endsWith('.heif');
+      
+      // If accept is any image
+      if (accept === 'image/*' && (type.startsWith('image/') || name.endsWith('.heic') || name.endsWith('.heif'))) return true;
+      
+      // Check against specific extensions or mime types
+      return acceptedTypes.some(at => {
+        if (at.startsWith('.')) return name.endsWith(at.toLowerCase());
+        if (at.includes('*')) {
+          const [prefix] = at.split('*');
+          return type.startsWith(prefix);
+        }
+        return type === at;
+      });
     }).slice(0, maxFiles);
     if (files.length) onFiles(files);
   };
