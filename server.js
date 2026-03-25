@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
 import fs from 'fs';
+import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -93,6 +94,35 @@ app.delete('/api/files/:id', (req, res) => {
   if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'File not found' });
   fs.unlinkSync(filePath);
   res.json({ ok: true });
+});
+
+// POST /api/contact — Handle Contact Us form
+app.post('/api/contact', async (req, res) => {
+  const { name, email, subject, message } = req.body;
+  if (!name || !email || !message) return res.status(400).json({ error: 'Missing required fields' });
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.linuxhardened.com',
+      port: 25,
+      secure: false,
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"${name}" <${email}>`,
+      to: 'admin@localhost', // Assuming a default admin since none was given
+      subject: `Contact Form: ${subject || 'Feedback'}`,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+    });
+
+    res.json({ ok: true });
+  } catch (error) {
+    console.error('SMTP Error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
 });
 
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

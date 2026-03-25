@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import heic2any from 'heic2any';
+import JSZip from 'jszip';
 import DropZone from './DropZone';
 import FolderUpload from './FolderUpload';
 
@@ -61,6 +62,9 @@ const UniversalConverter = () => {
   const [resizeH, setResizeH] = useState(512);
   const [results, setResults] = useState([]);
   const [processing, setProcessing] = useState(false);
+  const [zipping, setZipping] = useState(false);
+  const [progressStage, setProgressStage] = useState('');
+  const [progressValue, setProgressValue] = useState(0);
 
   // Live preview state (first file only)
   const [livePreview, setLivePreview] = useState(null);
@@ -120,12 +124,15 @@ const UniversalConverter = () => {
 
   const convertAll = async () => {
     setProcessing(true);
+    setProgressStage('Converting…');
+    setProgressValue(0);
     const rw = resizeEnabled ? resizeW : null;
     const rh = resizeEnabled ? resizeH : null;
     const out = [];
     const fd = new FormData();
 
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       try {
         let url;
         if (isHeic(file)) {
@@ -145,19 +152,71 @@ const UniversalConverter = () => {
       } catch (err) {
         out.push({ name: file.name, error: err.message });
       }
+      setProgressValue(Math.round(((i + 1) / files.length) * 100));
     }
 
-    // Auto-save all converted files to server
-    try {
-      await fetch('/api/upload', { method: 'POST', body: fd });
-    } catch { /* server unavailable — silently skip */ }
+    // Auto-save all converted files to server via tracking XHR
+    if (out.length > 0) {
+      setProgressStage('Uploading…');
+      setProgressValue(0);
+      try {
+        await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', '/api/upload');
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) setProgressValue(Math.round((e.loaded / e.total) * 100));
+          };
+          xhr.onload = () => resolve();
+          xhr.onerror = () => reject();
+          xhr.send(fd);
+        });
+      } catch { /* server unavailable — silently skip */ }
+    }
 
     setResults(out);
     setProcessing(false);
+    setProgressStage('');
+    setProgressValue(0);
   };
 
   const downloadFile = (url, name) => { const a = document.createElement('a'); a.href = url; a.download = name; a.click(); };
-  const downloadAll = () => results.filter(r => r.url).forEach(r => downloadFile(r.url, r.name));
+  const downloadAll = async () => {
+    const validResults = results.filter(r => r.url);
+    if (!validResults.length) return;
+
+    if (validResults.length === 1) {
+      downloadFile(validResults[0].url, validResults[0].name);
+      return;
+    }
+
+    setZipping(true);
+    setProgressStage('Preparing ZIP…');
+    setProgressValue(0);
+    try {
+      const zip = new JSZip();
+      for (let i = 0; i < validResults.length; i++) {
+        const r = validResults[i];
+        const response = await fetch(r.url);
+        const blob = await response.blob();
+        zip.file(r.name, blob);
+        setProgressValue(Math.round(((i + 1) / validResults.length) * 50));
+      }
+      setProgressStage('Archiving ZIP…');
+      const zipBlob = await zip.generateAsync({ type: 'blob' }, (meta) => {
+        setProgressValue(50 + Math.round(meta.percent / 2));
+      });
+      const zipUrl = URL.createObjectURL(zipBlob);
+      downloadFile(zipUrl, 'converted_files.zip');
+      setTimeout(() => URL.revokeObjectURL(zipUrl), 2000);
+    } catch (err) {
+      console.error('Failed to create ZIP:', err);
+      alert('Failed to create ZIP archive.');
+    } finally {
+      setZipping(false);
+      setProgressStage('');
+      setProgressValue(0);
+    }
+  };
 
   const showsQuality = !noQualityFormats.includes(outputFormat);
 
@@ -231,6 +290,18 @@ const UniversalConverter = () => {
             {files.length} file{files.length > 1 ? 's' : ''} selected: {files.map(f => f.name).join(', ')}
           </p>
 
+          {progressStage && (
+            <div className="progress-container fade-in visible" style={{ margin: '1rem 0', padding: '1rem', background: 'var(--glass)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem', color: 'var(--text)', fontWeight: 600 }}>
+                <span>{progressStage}</span>
+                <span>{progressValue}%</span>
+              </div>
+              <div style={{ width: '100%', height: '8px', background: 'var(--border)', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${progressValue}%`, height: '100%', background: 'var(--teal)', transition: 'width 0.2s ease', borderRadius: '4px' }} />
+              </div>
+            </div>
+          )}
+
           {livePreview && (
             <div className="live-preview-panel">
               <div className="live-preview-label">Live Preview{files.length > 1 ? ' (first image)' : ''}</div>
@@ -264,7 +335,9 @@ const UniversalConverter = () => {
       {results.length > 0 && (
         <>
           <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem 0 0' }}>
-            <button className="btn btn-outline btn-sm" onClick={downloadAll}>⬇ Download All</button>
+            <button className="btn btn-outline btn-sm" onClick={downloadAll} disabled={zipping}>
+              {zipping ? '⏳ Zipping...' : '⬇ Download All as ZIP'}
+            </button>
           </div>
           <div className="preview-grid">
             {results.map((r, i) => (

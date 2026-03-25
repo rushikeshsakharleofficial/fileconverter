@@ -13,11 +13,21 @@ const Contact = () => {
   const [toast, setToast] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setToast(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setToast(false), 3500);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (!res.ok) throw new Error('Failed to send message over SMTP');
+      setToast(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setToast(false), 3500);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
   };
 
   const update = (field, val) => setFormData(prev => ({ ...prev, [field]: val }));
@@ -75,7 +85,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
-      {toast && <div className="toast">✅ Message sent successfully! (Demo only)</div>}
+      {toast && <div className="toast">✅ Message sent successfully!</div>}
     </section>
   );
 };
