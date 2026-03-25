@@ -21,6 +21,7 @@ const Navbar = () => {
                   <NavLink to="/tools/converter" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🔄 Universal Converter</NavLink>
                   <NavLink to="/tools/gif" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🎞️ GIF Maker</NavLink>
                   <NavLink to="/tools/pdf" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🔓 PDF Unlocker</NavLink>
+                  <NavLink to="/tools/pdf-lock" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🔐 PDF Locker</NavLink>
                 </div>
               </li>
             );

@@ -10,7 +10,10 @@ const Tools = () => {
     <section>
       <div className="container">
         <h2 className="section-title fade-in visible">
-          {location.pathname.includes('gif') ? '🎞️ GIF Maker' : location.pathname.includes('pdf') ? '🔓 PDF Unlocker' : '🔄 Universal Converter'}
+          {location.pathname.includes('gif') ? '🎞️ GIF Maker' : 
+           location.pathname.includes('pdf-lock') ? '🔐 PDF Locker' :
+           location.pathname.includes('pdf') ? '🔓 PDF Unlocker' : 
+           '🔄 Universal Converter'}
         </h2>
         <p className="section-subtitle fade-in visible">All processing happens right here in your browser — nothing is uploaded</p>
         <div className="glass fade-in visible" style={{ marginTop: '1rem' }}>
