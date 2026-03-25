@@ -206,7 +206,8 @@ const UniversalConverter = () => {
         setProgressValue(50 + Math.round(meta.percent / 2));
       });
       const zipUrl = URL.createObjectURL(zipBlob);
-      downloadFile(zipUrl, 'converted_files.zip');
+      const ts = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_').slice(0, 19);
+      downloadFile(zipUrl, `converted_files_${ts}.zip`);
       setTimeout(() => URL.revokeObjectURL(zipUrl), 2000);
     } catch (err) {
       console.error('Failed to create ZIP:', err);
