@@ -182,7 +182,7 @@ const UniversalConverter = () => {
                     type="range" min="1" max="100" value={quality}
                     onChange={e => setQuality(+e.target.value)}
                     className="quality-slider"
-                    style={{ '--val': quality }}
+                    style={{ background: `linear-gradient(to right, var(--teal) 0%, var(--teal) ${quality}%, var(--border) ${quality}%, var(--border) 100%)` }}
                   />
                   <input
                     type="number" min="1" max="100" value={quality}

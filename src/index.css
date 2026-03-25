@@ -105,7 +105,6 @@ section{min-height:100vh;padding:6rem 2rem 4rem}
 .quality-slider{
   -webkit-appearance:none;appearance:none;
   width:140px;height:6px;border-radius:3px;
-  background:linear-gradient(to right,var(--teal) 0%,var(--teal) calc((var(--val,92) - 1) / 99 * 100%),var(--border) calc((var(--val,92) - 1) / 99 * 100%),var(--border) 100%);
   outline:none;border:none;box-shadow:none;cursor:pointer;padding:0;margin:0;
 }
 .quality-slider::-webkit-slider-thumb{
