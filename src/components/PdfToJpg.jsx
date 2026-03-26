@@ -67,10 +67,13 @@ const PdfToJpg = () => {
 
     } catch (err) {
       console.error(err);
-      if (err.name === 'PasswordException') {
+      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
+                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
+      
+      if (isEncrypted) {
         setNeedsPassword(true);
       } else {
-        setError('An error occurred while processing the PDF.');
+        setError('An error occurred: ' + (err.message || 'Unknown error.'));
       }
     } finally {
       setProcessing(false);

@@ -115,10 +115,13 @@ const PdfToExcel = () => {
 
     } catch (err) {
       console.error(err);
-      if (err.name === 'PasswordException') {
+      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
+                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
+      
+      if (isEncrypted) {
         setNeedsPassword(true);
       } else {
-        setError('An error occurred. PDF may not contain recognizable text tables.');
+        setError('An error occurred: ' + (err.message || 'PDF may not contain recognizable text tables.'));
       }
     } finally {
       setProcessing(false);

@@ -48,10 +48,13 @@ const PdfToPdfA = () => {
 
     } catch (err) {
       console.error(err);
-      if (err.name === 'EncryptedPDFError' || (err.message && err.message.toLowerCase().includes('encrypt'))) {
+      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
+                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
+      
+      if (isEncrypted) {
         setNeedsPassword(true);
       } else {
-        setError('An error occurred. The PDF might be corrupted or severely restricted.');
+        setError('An error occurred: ' + (err.message || 'The PDF might be corrupted or restricted.'));
       }
     } finally {
       setProcessing(false);
