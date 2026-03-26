@@ -3,6 +3,7 @@ import DropZone from './DropZone';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import JSZip from 'jszip';
+import { isEncryptedError } from '../utils/pdfPasswordCheck';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -67,10 +68,7 @@ const PdfToJpg = () => {
 
     } catch (err) {
       console.error(err);
-      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
-                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
-      
-      if (isEncrypted) {
+      if (isEncryptedError(err)) {
         setNeedsPassword(true);
       } else {
         setError('An error occurred: ' + (err.message || 'Unknown error.'));
@@ -89,6 +87,18 @@ const PdfToJpg = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Convert every page of a PDF into high-quality JPG images. All pages are packaged in a ZIP file, ready to download instantly.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">🖼️ High-quality export</span>
+          <span className="tool-feat ok">✓ All pages at once</span>
+          <span className="tool-feat ok">✓ ZIP download</span>
+          <span className="tool-feat ok">✓ Password PDF support</span>
+          <span className="tool-feat inf">2× render scale for crisp output</span>
+        </div>
+      </div>
       {!file ? (
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to convert to JPG" />
       ) : (

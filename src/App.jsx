@@ -1,7 +1,10 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
+
+// Eagerly loaded (small, always needed)
 import Home from './components/Home';
 import Tools from './components/Tools';
 import UniversalConverter from './components/UniversalConverter';
@@ -17,15 +20,63 @@ import OcrTool from './components/OcrTool';
 import ComingSoon from './components/ComingSoon';
 import About from './components/About';
 import Privacy from './components/Privacy';
-import Contact from './components/Contact';
-import Blog from './components/Blog';
-import BlogPost from './components/BlogPost';
+import ComingSoon from './components/ComingSoon';
+
+// Lazy loaded (heavy tools — only loaded when navigated to)
+const Tools = lazy(() => import('./components/Tools'));
+const UniversalConverter = lazy(() => import('./components/UniversalConverter'));
+const GifMaker = lazy(() => import('./components/GifMaker'));
+const PdfUnlocker = lazy(() => import('./components/PdfUnlocker'));
+const PdfLocker = lazy(() => import('./components/PdfLocker'));
+const PdfToJpg = lazy(() => import('./components/PdfToJpg'));
+const PdfToWord = lazy(() => import('./components/PdfToWord'));
+const PdfToPowerpoint = lazy(() => import('./components/PdfToPowerpoint'));
+const PdfToExcel = lazy(() => import('./components/PdfToExcel'));
+const PdfToPdfA = lazy(() => import('./components/PdfToPdfA'));
+const Contact = lazy(() => import('./components/Contact'));
+const Blog = lazy(() => import('./components/Blog'));
+const BlogPost = lazy(() => import('./components/BlogPost'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
+
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      }),
+      { threshold: 0.12, rootMargin: '0px 0px -30px 0px' }
+    );
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.in-view)').forEach(el => observer.observe(el));
+    }, 80);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [pathname]);
+
   return null;
 };
+
+const Spinner = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+    style={{ animation: 'spin 0.8s linear infinite', flexShrink: 0 }}>
+    <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.5"
+      strokeDasharray="28" strokeDashoffset="10" strokeLinecap="round" />
+  </svg>
+);
+
+const LoadingFallback = () => (
+  <div style={{
+    display: 'flex', justifyContent: 'center', alignItems: 'center',
+    minHeight: '40vh', color: 'var(--text3)', fontSize: '0.875rem', gap: '0.5rem',
+  }}>
+    <Spinner /> Loading…
+  </div>
+);
 
 const App = () => (
   <BrowserRouter>

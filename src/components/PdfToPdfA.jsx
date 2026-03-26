@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
 import { PDFDocument } from 'pdf-lib';
+import { isEncryptedError } from '../utils/pdfPasswordCheck';
 
 const PdfToPdfA = () => {
   const [file, setFile] = useState(null);
@@ -48,10 +49,7 @@ const PdfToPdfA = () => {
 
     } catch (err) {
       console.error(err);
-      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
-                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
-      
-      if (isEncrypted) {
+      if (isEncryptedError(err)) {
         setNeedsPassword(true);
       } else {
         setError('An error occurred: ' + (err.message || 'The PDF might be corrupted or restricted.'));
@@ -69,8 +67,21 @@ const PdfToPdfA = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Flatten forms, embed metadata, and prepare your PDF for long-term archiving. Produces a clean, self-contained PDF suitable for official record-keeping.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">🔒 Flatten &amp; archive</span>
+          <span className="tool-feat ok">✓ Embeds metadata</span>
+          <span className="tool-feat ok">✓ Removes form fields</span>
+          <span className="tool-feat ok">✓ 100% private</span>
+          <span className="tool-feat inf">Note: does not produce ISO 19005-certified PDF/A</span>
+        </div>
+      </div>
+
       {!file ? (
-        <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to convert for archiving" />
+        <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to flatten &amp; archive — or click to browse" />
       ) : (
         <div className="processing-box text-center">
           {processing ? (
@@ -105,8 +116,8 @@ const PdfToPdfA = () => {
             </div>
           ) : !downloadUrl ? (
             <div className="mt-3">
-              <p className="text-muted text-sm mb-3">Note: We flatten forms and optimize metadata for long-term preservation.</p>
-              <button className="btn btn-primary" onClick={() => processPdf()}>Convert to PDF/A</button>
+              <p className="text-muted text-sm mb-3">Note: This tool flattens forms and optimizes metadata for long-term preservation. It does not produce a fully ISO 19005-compliant PDF/A — for strict compliance, use a dedicated PDF/A validator.</p>
+              <button className="btn btn-primary" onClick={() => processPdf()}>Flatten &amp; Archive PDF</button>
             </div>
           ) : (
             <div className="mt-4">

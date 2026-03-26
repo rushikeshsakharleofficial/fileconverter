@@ -2,12 +2,7 @@ import { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
 import DropZone from './DropZone';
-
-const formatSize = (bytes) => {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1048576).toFixed(2) + ' MB';
-};
+import formatSize from '../utils/formatSize';
 
 const PdfLocker = () => {
   const [file, setFile] = useState(null);
@@ -64,48 +59,66 @@ const PdfLocker = () => {
 
   return (
     <div>
-      <DropZone onFiles={handleFiles} multiple={false} maxFiles={1} accept="application/pdf" label="Drop an unencrypted PDF file here" />
-      
+      {/* Info bar */}
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Add strong password protection to any PDF. Your file is encrypted locally — nothing ever leaves your browser.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">🔐 AES Encryption</span>
+          <span className="tool-feat ok">✓ 100% private</span>
+          <span className="tool-feat ok">✓ No upload</span>
+          <span className="tool-feat ok">✓ Instant protect</span>
+          <span className="tool-feat inf">Compatible with Adobe Acrobat &amp; all PDF readers</span>
+        </div>
+      </div>
+
+      <DropZone onFiles={handleFiles} multiple={false} maxFiles={1} accept="application/pdf" label="Drop a PDF here to protect — or click to browse" />
+
       {file && !lockedUrl && (
-        <div className="glass fade-in visible" style={{ marginTop: '1.5rem', padding: '1.5rem' }}>
-          <h3 style={{ fontFamily: 'var(--heading)', fontSize: '1.2rem', color: 'var(--text)', marginBottom: '1rem' }}>
-            🔒 Protect {file.name} ({formatSize(file.size)})
-          </h3>
-          
-          <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label>Set PDF Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              placeholder="Enter a strong password..."
+        <div className="tool-info-bar fade-in" style={{ marginTop: '1.25rem', gap: '1rem' }}>
+          <div className="tool-file-info" style={{ margin: 0 }}>
+            <span className="file-icon">📄</span>
+            <div>
+              <div className="tool-file-name">{file.name}</div>
+              <div className="tool-file-size">{formatSize(file.size)}</div>
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: '0.5rem' }}>
+            <label>Set Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && password && handleLock()}
+              placeholder="Choose a strong password…"
               disabled={isProcessing}
             />
           </div>
-          
-          {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontWeight: 600 }}>{error}</p>}
-          
-          <button className="btn btn-primary" onClick={handleLock} disabled={isProcessing || !password}>
-            {isProcessing ? 'Locking...' : '🔒 Lock PDF'}
-          </button>
+
+          {error && <p className="text-danger" style={{ fontWeight: 600, fontSize: '0.875rem' }}>{error}</p>}
+
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button className="btn btn-primary" onClick={handleLock} disabled={isProcessing || !password}>
+              {isProcessing ? 'Encrypting…' : '🔐 Protect PDF'}
+            </button>
+            <button className="btn btn-outline" onClick={() => { setFile(null); setPassword(''); setError(null); }}>
+              Remove
+            </button>
+          </div>
         </div>
       )}
 
       {lockedUrl && (
-        <div className="glass fade-in visible" style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-          <div className="icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
-          <h3 style={{ fontFamily: 'var(--heading)', fontSize: '1.3rem', color: 'var(--text)', marginBottom: '0.5rem' }}>
-            Successfully Locked!
-          </h3>
-          <p style={{ color: 'var(--text2)', marginBottom: '1.5rem' }}>
-            Your PDF is now password protected.
-          </p>
-          <button className="btn btn-primary" onClick={downloadFile}>
-            ⬇ Download Locked PDF
-          </button>
-          <button className="btn btn-outline" style={{ marginLeft: '1rem' }} onClick={() => setFile(null)}>
-            Lock Another
-          </button>
+        <div className="tool-result-box fade-in">
+          <div className="tool-result-icon">🔐</div>
+          <div className="tool-result-title">PDF Protected Successfully</div>
+          <p className="tool-result-meta">Your PDF is now password-encrypted and ready to share safely.</p>
+          <div className="tool-result-actions">
+            <button className="btn btn-primary" onClick={downloadFile}>⬇ Download Protected PDF</button>
+            <button className="btn btn-outline" onClick={() => { setFile(null); setPassword(''); setLockedUrl(null); }}>Protect Another</button>
+          </div>
         </div>
       )}
     </div>

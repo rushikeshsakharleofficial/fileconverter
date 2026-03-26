@@ -3,6 +3,7 @@ import DropZone from './DropZone';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { isEncryptedError } from '../utils/pdfPasswordCheck';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -95,10 +96,7 @@ const PdfToWord = () => {
 
     } catch (err) {
       console.error(err);
-      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
-                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
-      
-      if (isEncrypted) {
+      if (isEncryptedError(err)) {
         setNeedsPassword(true);
       } else {
         setError('An error occurred: ' + (err.message || 'Unknown error.'));
@@ -117,6 +115,18 @@ const PdfToWord = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Extract text from any PDF and convert it into an editable Word (.docx) document. Text layout is preserved page by page.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📝 Editable DOCX</span>
+          <span className="tool-feat ok">✓ Page-by-page text</span>
+          <span className="tool-feat ok">✓ Password PDF support</span>
+          <span className="tool-feat ok">✓ Instant download</span>
+          <span className="tool-feat inf">Note: complex layouts may not preserve formatting</span>
+        </div>
+      </div>
       {!file ? (
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to extract to Word" />
       ) : (

@@ -3,6 +3,9 @@ import heic2any from 'heic2any';
 import JSZip from 'jszip';
 import DropZone from './DropZone';
 import FolderUpload from './FolderUpload';
+import formatSize from '../utils/formatSize';
+import isHeic from '../utils/isHeic';
+import { readFile, loadImg } from '../utils/fileHelpers';
 
 const formats = [
   { value: 'image/png',    label: 'PNG',  ext: 'png'  },
@@ -15,32 +18,6 @@ const formats = [
 ];
 
 const noQualityFormats = ['image/png', 'image/bmp', 'image/x-icon', 'image/tiff'];
-
-const formatSize = (bytes) => {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1048576).toFixed(2) + ' MB';
-};
-
-const readFile = (file) => new Promise((res, rej) => {
-  const r = new FileReader();
-  r.onload = () => res(r.result);
-  r.onerror = rej;
-  r.readAsDataURL(file);
-});
-
-const loadImg = (src) => new Promise((res, rej) => {
-  const img = new Image();
-  img.onload = () => res(img);
-  img.onerror = rej;
-  img.src = src;
-});
-
-const isHeic = (file) => {
-  const name = file.name.toLowerCase();
-  return name.endsWith('.heic') || name.endsWith('.heif') ||
-         file.type === 'image/heic' || file.type === 'image/heif';
-};
 
 const drawToCanvas = (img, fmt, resizeW, resizeH) => {
   const w = resizeW || img.naturalWidth;
@@ -86,8 +63,8 @@ const FilePreviewRow = ({ file, config, onChangeConfig }) => {
         if (prev?.src?.startsWith('blob:')) URL.revokeObjectURL(prev.src);
         return { src: URL.createObjectURL(blob), size: blob.size, origSize: file.size };
       });
-    } catch { 
-       // silently skip err
+    } catch (err) {
+      console.warn('Preview render failed:', err.message);
     } finally {
       setIsRendering(false);
     }
@@ -95,10 +72,9 @@ const FilePreviewRow = ({ file, config, onChangeConfig }) => {
 
   useEffect(() => {
     clearTimeout(debounceRef.current);
-    // stagger the preview rendering for performance using slight random jitter
     debounceRef.current = setTimeout(() => {
       renderPreview();
-    }, 300 + Math.random() * 300);
+    }, 300);
     return () => clearTimeout(debounceRef.current);
   }, [renderPreview]);
 
@@ -223,7 +199,6 @@ const UniversalConverter = ({ defaultOutputFormat = null }) => {
     setProgressStage('Converting…');
     setProgressValue(0);
     const out = [];
-    const fd = new FormData();
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -247,47 +222,11 @@ const UniversalConverter = ({ defaultOutputFormat = null }) => {
         
         const ext = (formats.find(f => f.value === cfg.outputFormat) || { ext: 'png' }).ext;
         const name = file.name.replace(/\.[^.]+$/, '') + '.' + ext;
-        fd.append('files', blob, name);
         out.push({ blob, name, originalSize: file.size, newSize: blob.size, url: URL.createObjectURL(blob), previewUrl: url });
       } catch (err) {
         out.push({ name: file.name, error: err.message });
       }
       setProgressValue(Math.round(((i + 1) / files.length) * 100));
-    }
-
-    // Auto-save all converted files to server via tracking XHR in batches of 10
-    if (out.length > 0) {
-      setProgressStage('Uploading…');
-      setProgressValue(0);
-      const BATCH_SIZE = 10;
-      let totalLoadedGlobal = 0;
-      const totalSizeGlobal = out.reduce((acc, current) => acc + current.blob.size, 0);
-
-      for (let i = 0; i < out.length; i += BATCH_SIZE) {
-        const batch = out.slice(i, i + BATCH_SIZE);
-        const batchSize = batch.reduce((acc, curr) => acc + curr.blob.size, 0);
-        const fdBatch = new FormData();
-        batch.forEach(f => fdBatch.append('files', f.blob, f.name));
-
-        try {
-          await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/upload');
-            xhr.upload.onprogress = (e) => {
-              if (e.lengthComputable && totalSizeGlobal > 0) {
-                const currentLoaded = totalLoadedGlobal + e.loaded;
-                setProgressValue(Math.round((currentLoaded / totalSizeGlobal) * 100));
-              }
-            };
-            xhr.onload = () => {
-              totalLoadedGlobal += batchSize;
-              resolve();
-            };
-            xhr.onerror = () => reject();
-            xhr.send(fdBatch);
-          });
-        } catch { /* silently skip server availability issues */ }
-      }
     }
 
     setResults(out);
@@ -340,6 +279,35 @@ const UniversalConverter = ({ defaultOutputFormat = null }) => {
 
   return (
     <div>
+      {/* Info bar */}
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Convert any image to any format — instantly in your browser. Supports batch conversion, custom quality, and resize. No uploads, no sign-up.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📱 Apple HEIC supported</span>
+          <span className="tool-feat ok">✓ Batch convert</span>
+          <span className="tool-feat ok">✓ Custom resize</span>
+          <span className="tool-feat ok">✓ Quality control</span>
+          <span className="tool-feat inf">PNG · JPEG · WebP · AVIF · BMP · ICO · TIFF</span>
+        </div>
+      </div>
+
+      {/* Device conversion shortcuts */}
+      {!defaultOutputFormat && (
+        <div className="device-conversions">
+          <span className="device-conversions-label">Popular device &amp; use-case conversions</span>
+          <div className="device-grid">
+            <div className="device-card"><span className="dc-emoji">📱</span><span className="dc-from">iPhone / Apple</span><span className="dc-arr">→</span><span className="dc-to">Samsung / Android</span></div>
+            <div className="device-card"><span className="dc-emoji">📸</span><span className="dc-from">Apple HEIC</span><span className="dc-arr">→</span><span className="dc-to">WhatsApp JPEG</span></div>
+            <div className="device-card"><span className="dc-emoji">🎨</span><span className="dc-from">PNG (transparent)</span><span className="dc-arr">→</span><span className="dc-to">WebP (web)</span></div>
+            <div className="device-card"><span className="dc-emoji">🖼️</span><span className="dc-from">JPEG / PNG</span><span className="dc-arr">→</span><span className="dc-to">AVIF (streaming)</span></div>
+            <div className="device-card"><span className="dc-emoji">💾</span><span className="dc-from">BMP (Windows)</span><span className="dc-arr">→</span><span className="dc-to">PNG / WebP</span></div>
+            <div className="device-card"><span className="dc-emoji">🔷</span><span className="dc-from">PNG (logo)</span><span className="dc-arr">→</span><span className="dc-to">ICO (favicon)</span></div>
+          </div>
+        </div>
+      )}
+
       <DropZone onFiles={handleFiles} maxFiles={99999} accept="image/*,.heic,.heif"
         label={`Drop images to convert ${defaultOutputFormat ? 'to ' + formats.find(f => f.value === defaultOutputFormat)?.label : ''} — supports PNG, JPG, WebP, HEIC, HEIF & more`} />
       <FolderUpload onFiles={handleFiles} />

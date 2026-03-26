@@ -3,6 +3,7 @@ import DropZone from './DropZone';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import * as XLSX from 'xlsx';
+import { isEncryptedError } from '../utils/pdfPasswordCheck';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -115,10 +116,7 @@ const PdfToExcel = () => {
 
     } catch (err) {
       console.error(err);
-      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
-                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
-      
-      if (isEncrypted) {
+      if (isEncryptedError(err)) {
         setNeedsPassword(true);
       } else {
         setError('An error occurred: ' + (err.message || 'PDF may not contain recognizable text tables.'));
@@ -137,6 +135,18 @@ const PdfToExcel = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Extract tables and text from PDFs into an Excel spreadsheet (.xlsx). Each PDF page becomes a worksheet with the extracted data.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📈 Excel XLSX</span>
+          <span className="tool-feat ok">✓ Table extraction</span>
+          <span className="tool-feat ok">✓ Password PDF support</span>
+          <span className="tool-feat ok">✓ One sheet per page</span>
+          <span className="tool-feat inf">Best results with text-based PDFs</span>
+        </div>
+      </div>
       {!file ? (
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to extract to Excel" />
       ) : (

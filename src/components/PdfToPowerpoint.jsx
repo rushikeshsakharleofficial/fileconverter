@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
 import * as pdfjsLib from 'pdfjs-dist';
-// Explicitly require the worker for pdfjs
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import pptxgen from 'pptxgenjs';
+import { isEncryptedError } from '../utils/pdfPasswordCheck';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -78,10 +78,7 @@ const PdfToPowerpoint = () => {
 
     } catch (err) {
       console.error(err);
-      const isEncrypted = err.name === 'PasswordException' || err.name === 'EncryptedPDFError' || 
-                          (err.message && (err.message.toLowerCase().includes('password') || err.message.toLowerCase().includes('encrypt')));
-      
-      if (isEncrypted) {
+      if (isEncryptedError(err)) {
         setNeedsPassword(true);
       } else {
         setError('An error occurred: ' + (err.message || 'Unknown error.'));
@@ -100,6 +97,18 @@ const PdfToPowerpoint = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Convert PDF pages into PowerPoint slides. Each PDF page becomes a slide image in a .pptx file ready to edit in PowerPoint or Google Slides.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📊 Editable PPTX</span>
+          <span className="tool-feat ok">✓ One slide per page</span>
+          <span className="tool-feat ok">✓ Password PDF support</span>
+          <span className="tool-feat ok">✓ High-res slides</span>
+          <span className="tool-feat inf">Compatible with PowerPoint &amp; Google Slides</span>
+        </div>
+      </div>
       {!file ? (
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to convert to PPTX" />
       ) : (
