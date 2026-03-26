@@ -154,7 +154,7 @@ const PdfToWord = () => {
           ) : !downloadUrl ? (
             <div className="mt-3">
               <p className="text-muted text-sm mb-3">Note: Text extraction translates readable text. Complex layouts and images might not be perfectly preserved.</p>
-              <button className="btn btn-primary" onClick={processPdf}>Extract to Word</button>
+              <button className="btn btn-primary" onClick={() => processPdf()}>Extract to Word</button>
             </div>
           ) : (
             <div className="mt-4">

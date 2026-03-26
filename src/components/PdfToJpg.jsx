@@ -124,7 +124,7 @@ const PdfToJpg = () => {
               </div>
             </div>
           ) : !downloadUrl ? (
-            <button className="btn btn-primary mt-3" onClick={processPdf}>Convert to JPG</button>
+            <button className="btn btn-primary mt-3" onClick={() => processPdf()}>Convert to JPG</button>
           ) : (
             <div className="mt-4">
               <p className="text-success mb-3">✅ Conversion complete!</p>

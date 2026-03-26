@@ -106,7 +106,7 @@ const PdfToPdfA = () => {
           ) : !downloadUrl ? (
             <div className="mt-3">
               <p className="text-muted text-sm mb-3">Note: We flatten forms and optimize metadata for long-term preservation.</p>
-              <button className="btn btn-primary" onClick={processPdf}>Convert to PDF/A</button>
+              <button className="btn btn-primary" onClick={() => processPdf()}>Convert to PDF/A</button>
             </div>
           ) : (
             <div className="mt-4">
