@@ -110,7 +110,12 @@ const PdfToWord = () => {
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to extract to Word" />
       ) : (
         <div className="processing-box text-center">
-          <h3 className="mb-3">📄 {file.name}</h3>
+          {processing ? (
+            <div className="processing-icon mb-3">⚙️</div>
+          ) : (
+            <h3 className="mb-3">📄</h3>
+          )}
+          <h4 className="mb-3">{file.name}</h4>
           
           {error && <p className="text-danger">{error}</p>}
           
@@ -118,7 +123,7 @@ const PdfToWord = () => {
             <div className="mt-4">
               <p>Extracting text to Word... {progress}%</p>
               <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                <div className="progress-fill animated" style={{ width: `${progress}%` }}></div>
               </div>
             </div>
           ) : !downloadUrl ? (
