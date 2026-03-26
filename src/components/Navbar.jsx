@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useState } from 'react';
+import { toolsData } from '../data/toolsData';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,11 +18,17 @@ const Navbar = () => {
             return (
               <li key={path} className="nav-dropdown">
                 <span className="nav-dropdown-trigger">Tools ▾</span>
-                <div className="nav-dropdown-menu">
-                  <NavLink to="/tools/converter" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🔄 Universal Converter</NavLink>
-                  <NavLink to="/tools/gif" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🎞️ GIF Maker</NavLink>
-                  <NavLink to="/tools/pdf" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🔓 PDF Unlocker</NavLink>
-                  <NavLink to="/tools/pdf-lock" className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>🔐 PDF Locker</NavLink>
+                <div className="mega-menu">
+                  {toolsData.map((cat, idx) => (
+                    <div key={idx} className="mega-menu-column">
+                      <h4>{cat.category}</h4>
+                      {cat.items.map((item, i) => (
+                        <NavLink key={i} to={item.path} className={({ isActive }) => isActive ? 'active' : ''} onClick={closeMenu}>
+                          {item.icon} {item.name}
+                        </NavLink>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </li>
             );

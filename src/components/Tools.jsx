@@ -1,9 +1,35 @@
-import { Outlet, Navigate, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Link } from 'react-router-dom';
+import { toolsData } from '../data/toolsData';
 
 const Tools = () => {
   const location = useLocation();
-  if (location.pathname === '/tools' || location.pathname === '/tools/') {
-    return <Navigate to="/tools/converter" replace />;
+  const isToolsHome = location.pathname === '/tools' || location.pathname === '/tools/';
+
+  if (isToolsHome) {
+    return (
+      <section>
+        <div className="container">
+          <h2 className="section-title fade-in visible">🛠️ All Tools Directory</h2>
+          <p className="section-subtitle fade-in visible">Explore our complete collection of free, private, browser-based tools</p>
+          
+          <div className="tools-directory fade-in visible">
+            {toolsData.map((cat, idx) => (
+              <div key={idx} className="tools-category-card glass">
+                <h3>{cat.category}</h3>
+                <div className="tools-category-links">
+                  {cat.items.map((item, i) => (
+                    <Link key={i} to={item.path} className="tool-link-item">
+                      <span className="tool-icon">{item.icon}</span>
+                      <span className="tool-name">{item.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (

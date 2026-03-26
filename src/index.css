@@ -27,10 +27,25 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
 
-/* ===== Dropdown Menu ===== */
+/* ===== Dropdown & Mega Menu ===== */
 .nav-dropdown { position: relative; cursor: pointer; display: flex; align-items: center; height: 100%; padding: 1rem 0; margin: -1rem 0; }
 .nav-dropdown-trigger { color: var(--text2); font-weight: 500; font-size: .95rem; transition: color .3s; }
 .nav-dropdown:hover .nav-dropdown-trigger { color: var(--teal); }
+
+.mega-menu {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px);
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08); display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem; width: max-content; max-width: 90vw; padding: 1.5rem; z-index: 1001;
+  opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+.nav-dropdown:hover .mega-menu { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+.mega-menu-column { display: flex; flex-direction: column; gap: 0.25rem; min-width: 180px; }
+.mega-menu-column h4 { font-family: var(--heading); font-size: 0.95rem; font-weight: 700; color: var(--text); padding-bottom: 0.5rem; margin-bottom: 0.25rem; border-bottom: 1px solid var(--bg2); }
+.mega-menu-column a { padding: 0.4rem 0.5rem; border-radius: 6px; display: flex; align-items: center; gap: 0.5rem; color: var(--text2); font-size: 0.9rem; text-decoration: none; font-weight: 500; transition: all 0.2s; }
+.mega-menu-column a:hover, .mega-menu-column a.active { background: rgba(252,94,2,.06); color: var(--teal); transform: translateX(2px); }
+
+/* Standard Dropdown fallback */
 .nav-dropdown-menu {
   position: absolute; top: 100%; left: 0; background: #fff;
   border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow);
@@ -41,6 +56,7 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:
 .nav-dropdown:hover .nav-dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
 .nav-dropdown-menu a { padding: 0.5rem 1rem; border-radius: 6px; display: block; color: var(--text); font-weight: 500; text-decoration: none; margin-bottom: 0.2rem; }
 .nav-dropdown-menu a:hover, .nav-dropdown-menu a.active { background: rgba(252,94,2,.08); color: var(--teal); }
+
 
 /* ===== Sections ===== */
 section{min-height:100vh;padding:6rem 2rem 4rem}
@@ -237,6 +253,17 @@ section{min-height:100vh;padding:6rem 2rem 4rem}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));border-radius:3px;transition:width .3s}
 
 /* ===== Mobile ===== */
+/* ===== Tools Directory ===== */
+.tools-directory { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+.tools-category-card { padding: 1.75rem; }
+.tools-category-card h3 { font-family: var(--heading); font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; padding-bottom: .75rem; border-bottom: 2px solid rgba(252,94,2,.15); }
+.tools-category-links { display: flex; flex-direction: column; gap: .35rem; }
+.tool-link-item { display: flex; align-items: center; gap: .65rem; padding: .6rem .75rem; border-radius: 10px; text-decoration: none; color: var(--text2); font-weight: 500; font-size: .95rem; transition: all .2s; }
+.tool-link-item:hover { background: rgba(252,94,2,.06); color: var(--teal); transform: translateX(4px); }
+.tool-icon { font-size: 1.15rem; width: 28px; text-align: center; flex-shrink: 0; }
+.tool-name { white-space: nowrap; }
+
+/* ===== Mobile ===== */
 @media(max-width:768px){
   .nav-links{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(248,250,252,.97);flex-direction:column;align-items:center;justify-content:center;gap:2rem;transform:translateX(100%);transition:transform .3s}
   .nav-links.open{transform:translateX(0)}
@@ -248,8 +275,11 @@ section{min-height:100vh;padding:6rem 2rem 4rem}
   .preview-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
   .live-preview-images{flex-direction:column;align-items:center}
   .live-preview-arrow{transform:rotate(90deg)}
+  .mega-menu{position:static;transform:none;grid-template-columns:1fr 1fr;width:100%;max-width:100%;box-shadow:none;border:none;padding:1rem;opacity:1;visibility:visible}
+  .tools-directory{grid-template-columns:1fr}
 }
 @media(max-width:480px){
   .features-grid{grid-template-columns:1fr}
   .steps{flex-direction:column;align-items:center}
+  .mega-menu{grid-template-columns:1fr}
 }
