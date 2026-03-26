@@ -13,6 +13,7 @@ import PdfToWord from './components/PdfToWord';
 import PdfToPowerpoint from './components/PdfToPowerpoint';
 import PdfToExcel from './components/PdfToExcel';
 import PdfToPdfA from './components/PdfToPdfA';
+import OcrTool from './components/OcrTool';
 import ComingSoon from './components/ComingSoon';
 import About from './components/About';
 import Privacy from './components/Privacy';
