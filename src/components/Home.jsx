@@ -2,20 +2,20 @@ import { Link } from 'react-router-dom';
 
 const Home = () => (
   <section className="hero">
-    <div className="container fade-in visible">
+    <div className="container fade-in">
       <h1>Every tool you need to work with <span className="accent">PDFs & Images</span></h1>
       <p className="hero-desc">
         Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.
         <br/>All <strong>100% FREE</strong>, private, and processed right in your browser.
       </p>
       <div className="hero-cta">
-        <Link to="/tools" className="btn btn-primary">🚀 Explore All Tools</Link>
         <Link to="/about" className="btn btn-outline">Learn More</Link>
+        <Link to="/tools" className="btn btn-primary">Explore All Tools 🚀</Link>
       </div>
     </div>
 
     <div className="container">
-      <div className="features-grid fade-in visible">
+      <div className="features-grid">
         {[
           { icon: '📁', title: 'Merge PDF', desc: 'Combine multiple PDFs into one single document.', link: '/tools/merge-pdf' },
           { icon: '✂️', title: 'Split PDF', desc: 'Separate pages into independent PDF files.', link: '/tools/split-pdf' },
@@ -24,7 +24,7 @@ const Home = () => (
           { icon: '🔓', title: 'Unlock PDF', desc: 'Remove passwords from protected PDFs.', link: '/tools/pdf' },
           { icon: '🔐', title: 'Protect PDF', desc: 'Add password encryption to your PDFs.', link: '/tools/pdf-lock' },
         ].map((f, i) => (
-          <Link to={f.link} className="glass feature-card fade-in visible" key={i} style={{ textDecoration: 'none' }}>
+          <Link to={f.link} className={`glass feature-card fade-in`} style={{ animationDelay: `${(i % 3) * 0.1 + 0.2}s`, textDecoration: 'none' }} key={i}>
             <div className="icon">{f.icon}</div>
             <h3>{f.title}</h3>
             <p>{f.desc}</p>
@@ -32,17 +32,17 @@ const Home = () => (
         ))}
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+      <div className="fade-in delay-3" style={{ textAlign: 'center', marginTop: '2rem' }}>
         <Link to="/tools" className="btn btn-outline">View All Tools →</Link>
       </div>
 
-      <div className="trust-strip fade-in visible">
+      <div className="trust-strip fade-in delay-4">
         {['No Sign-up Required', 'No File Size Limit', 'Works Offline', 'Open Source Friendly', 'Zero Data Collection'].map((t, i) => (
           <div className="trust-item" key={i}><span className="dot"/> {t}</div>
         ))}
       </div>
 
-      <div className="how-it-works fade-in visible">
+      <div className="how-it-works fade-in delay-4">
         <h2>How It Works</h2>
         <div className="steps">
           {[

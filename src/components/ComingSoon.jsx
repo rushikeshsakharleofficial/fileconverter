@@ -20,8 +20,8 @@ const ComingSoon = () => {
         <div className="cs-badge">✨ Coming Soon</div>
         <p className="cs-sub">We're crafting this tool with care. It'll be ready before you know it!</p>
         <div className="cs-actions">
-          <Link to="/tools" className="btn btn-primary">← Browse All Tools</Link>
-          <Link to="/" className="btn btn-outline" style={{ borderColor: '#fff', color: '#fff' }}>Go Home</Link>
+          <Link to="/" className="btn btn-outline">⌂ Go Home</Link>
+          <Link to="/tools" className="btn btn-primary">Browse All Tools →</Link>
         </div>
       </div>
     </div>
