@@ -67,8 +67,21 @@ const PdfToPdfA = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Flatten forms, embed metadata, and prepare your PDF for long-term archiving. Produces a clean, self-contained PDF suitable for official record-keeping.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">🔒 Flatten &amp; archive</span>
+          <span className="tool-feat ok">✓ Embeds metadata</span>
+          <span className="tool-feat ok">✓ Removes form fields</span>
+          <span className="tool-feat ok">✓ 100% private</span>
+          <span className="tool-feat inf">Note: does not produce ISO 19005-certified PDF/A</span>
+        </div>
+      </div>
+
       {!file ? (
-        <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to convert for archiving" />
+        <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to flatten &amp; archive — or click to browse" />
       ) : (
         <div className="processing-box text-center">
           {processing ? (

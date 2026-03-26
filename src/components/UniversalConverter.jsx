@@ -279,6 +279,35 @@ const UniversalConverter = ({ defaultOutputFormat = null }) => {
 
   return (
     <div>
+      {/* Info bar */}
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Convert any image to any format — instantly in your browser. Supports batch conversion, custom quality, and resize. No uploads, no sign-up.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📱 Apple HEIC supported</span>
+          <span className="tool-feat ok">✓ Batch convert</span>
+          <span className="tool-feat ok">✓ Custom resize</span>
+          <span className="tool-feat ok">✓ Quality control</span>
+          <span className="tool-feat inf">PNG · JPEG · WebP · AVIF · BMP · ICO · TIFF</span>
+        </div>
+      </div>
+
+      {/* Device conversion shortcuts */}
+      {!defaultOutputFormat && (
+        <div className="device-conversions">
+          <span className="device-conversions-label">Popular device &amp; use-case conversions</span>
+          <div className="device-grid">
+            <div className="device-card"><span className="dc-emoji">📱</span><span className="dc-from">iPhone / Apple</span><span className="dc-arr">→</span><span className="dc-to">Samsung / Android</span></div>
+            <div className="device-card"><span className="dc-emoji">📸</span><span className="dc-from">Apple HEIC</span><span className="dc-arr">→</span><span className="dc-to">WhatsApp JPEG</span></div>
+            <div className="device-card"><span className="dc-emoji">🎨</span><span className="dc-from">PNG (transparent)</span><span className="dc-arr">→</span><span className="dc-to">WebP (web)</span></div>
+            <div className="device-card"><span className="dc-emoji">🖼️</span><span className="dc-from">JPEG / PNG</span><span className="dc-arr">→</span><span className="dc-to">AVIF (streaming)</span></div>
+            <div className="device-card"><span className="dc-emoji">💾</span><span className="dc-from">BMP (Windows)</span><span className="dc-arr">→</span><span className="dc-to">PNG / WebP</span></div>
+            <div className="device-card"><span className="dc-emoji">🔷</span><span className="dc-from">PNG (logo)</span><span className="dc-arr">→</span><span className="dc-to">ICO (favicon)</span></div>
+          </div>
+        </div>
+      )}
+
       <DropZone onFiles={handleFiles} maxFiles={99999} accept="image/*,.heic,.heif"
         label={`Drop images to convert ${defaultOutputFormat ? 'to ' + formats.find(f => f.value === defaultOutputFormat)?.label : ''} — supports PNG, JPG, WebP, HEIC, HEIF & more`} />
       <FolderUpload onFiles={handleFiles} />

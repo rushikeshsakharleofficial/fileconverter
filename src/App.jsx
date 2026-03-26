@@ -27,7 +27,25 @@ const BlogPost = lazy(() => import('./components/BlogPost'));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
+
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      }),
+      { threshold: 0.12, rootMargin: '0px 0px -30px 0px' }
+    );
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.reveal:not(.in-view)').forEach(el => observer.observe(el));
+    }, 80);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [pathname]);
+
   return null;
 };
 

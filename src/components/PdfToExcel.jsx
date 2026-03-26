@@ -135,6 +135,18 @@ const PdfToExcel = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Extract tables and text from PDFs into an Excel spreadsheet (.xlsx). Each PDF page becomes a worksheet with the extracted data.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📈 Excel XLSX</span>
+          <span className="tool-feat ok">✓ Table extraction</span>
+          <span className="tool-feat ok">✓ Password PDF support</span>
+          <span className="tool-feat ok">✓ One sheet per page</span>
+          <span className="tool-feat inf">Best results with text-based PDFs</span>
+        </div>
+      </div>
       {!file ? (
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to extract to Excel" />
       ) : (

@@ -9,7 +9,13 @@ const FEATURES = [
   { icon: '📝', title: 'PDF to Word',          desc: 'Extract text from PDFs into editable .docx documents.',                  link: '/tools/pdf-to-word' },
 ];
 
-const TRUST = ['No Sign-up Required', 'Zero Data Collection', 'Browser-Based', 'No File Size Limit', 'Open Source Friendly'];
+const TRUST = [
+  'No Sign-up Required',
+  'Zero Data Collection',
+  'Browser-Based',
+  'No File Size Limit',
+  'Open Source Friendly',
+];
 
 const STEPS = [
   { n: '01', title: 'Pick a Tool',   desc: 'Choose from our collection of PDF & image tools' },
@@ -17,40 +23,72 @@ const STEPS = [
   { n: '03', title: 'Download',      desc: 'Get your processed file instantly — no waiting' },
 ];
 
+const STATS = [
+  { num: '40+',  lbl: 'Tools available' },
+  { num: '15+',  lbl: 'File formats'    },
+  { num: '100%', lbl: 'Free forever'    },
+];
+
 const Home = () => (
-  <section className="hero">
+  <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+    {/* Floating ambient orbs */}
+    <div className="hero-orb hero-orb-1" aria-hidden="true" />
+    <div className="hero-orb hero-orb-2" aria-hidden="true" />
+    <div className="hero-orb hero-orb-3" aria-hidden="true" />
+
     <div className="container fade-in">
       <div className="hero-eyebrow">✦ 100% free &amp; private — no account needed</div>
+
       <h1>
         Every tool you need for<br />
         <span className="accent">PDFs &amp; Images</span>
       </h1>
+
       <p className="hero-desc">
         Convert, compress, merge, protect and unlock files right in your browser.
         Nothing is uploaded to any server — ever.
       </p>
+
       <div className="hero-cta">
         <Link to="/tools" className="btn btn-primary">Explore All Tools →</Link>
         <Link to="/about" className="btn btn-outline">How it works</Link>
       </div>
 
-      <div className="features-grid">
+      {/* Stats bar */}
+      <div className="hero-stats fade-in delay-2">
+        {STATS.map((s, i) => (
+          <div className="hero-stat" key={i}>
+            <div className="num">{s.num}</div>
+            <div className="lbl">{s.lbl}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Feature cards */}
+      <div className="features-grid" style={{ marginTop: '3.5rem' }}>
         {FEATURES.map((f, i) => (
-          <Link to={f.link} className="feature-card" key={i} style={{ animationDelay: `${i * 0.06}s` }}>
+          <Link to={f.link} className="feature-card" key={i}>
             <div className="icon">{f.icon}</div>
             <h3>{f.title}</h3>
             <p>{f.desc}</p>
+            <span className="feature-card-arrow" aria-hidden="true">→</span>
           </Link>
         ))}
       </div>
 
-      <div className="trust-strip fade-in delay-3">
+      <div className="section-divider" />
+
+      {/* Trust strip */}
+      <div className="trust-strip fade-in delay-4">
         {TRUST.map((t, i) => (
-          <div className="trust-item" key={i}><span className="dot" />{t}</div>
+          <div className="trust-item" key={i}>
+            <span className="dot" />{t}
+          </div>
         ))}
       </div>
 
-      <div className="how-it-works fade-in delay-4">
+      {/* How it works */}
+      <div className="how-it-works fade-in delay-5">
         <h2>How It Works</h2>
         <p className="subtitle">Three steps. No account. Completely private.</p>
         <div className="steps">

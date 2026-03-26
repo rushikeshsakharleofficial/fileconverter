@@ -95,29 +95,42 @@ const Navbar = () => {
             </NavLink>
           </li>
 
-          {/* Desktop mega-menu */}
+          {/* Desktop compact dropdown */}
           <li className="nav-dropdown desktop-only" ref={dropdownRef}
             onMouseEnter={() => setMegaOpen(true)}
             onMouseLeave={() => setMegaOpen(false)}>
             <span className="nav-dropdown-trigger"
               onClick={() => setMegaOpen(o => !o)}
               aria-expanded={megaOpen}>
-              All Tools ▾
+              Tools ▾
             </span>
-            <div className={`mega-menu${megaOpen ? ' open' : ''}`}>
-              {toolsData.map((cat, idx) => (
-                <div key={idx} className="mega-menu-column">
-                  <h4>{cat.category}</h4>
-                  {cat.items.map((item, i) => (
-                    <NavLink key={i} to={item.path} onClick={closeMenu}
-                      className={({ isActive }) => isActive ? 'active' : ''}>
-                      <span className="mega-icon">{item.icon}</span>
-                      {item.name}
-                      {item.isNew && <span className="badge badge-new">New</span>}
-                    </NavLink>
-                  ))}
-                </div>
-              ))}
+            <div className={`tools-dropdown${megaOpen ? ' open' : ''}`}>
+              <div className="tools-dropdown-grid">
+                {toolsData.map(cat => {
+                  const active = cat.items.filter(i => !i.comingSoon);
+                  if (!active.length) return null;
+                  return (
+                    <div key={cat.category} className="tools-dropdown-group">
+                      <span className="tools-dropdown-label">{cat.category}</span>
+                      {active.map(item => (
+                        <NavLink key={item.path} to={item.path} onClick={closeMenu}
+                          className={({ isActive }) => `tools-dropdown-item${isActive ? ' active' : ''}`}>
+                          <span className="tdi-icon">{item.icon}</span>
+                          <span className="tdi-name">
+                            {item.name}
+                            {item.isNew && <span className="badge badge-new">New</span>}
+                          </span>
+                        </NavLink>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="tools-dropdown-footer">
+                <Link to="/tools" onClick={closeMenu} className="tools-dropdown-browse">
+                  Browse all tools →
+                </Link>
+              </div>
             </div>
           </li>
 
@@ -126,21 +139,28 @@ const Navbar = () => {
             <button className="mobile-tools-toggle"
               onClick={() => setMobileToolsOpen(o => !o)}
               aria-expanded={mobileToolsOpen}>
-              All Tools {mobileToolsOpen ? '▴' : '▾'}
+              Tools {mobileToolsOpen ? '▴' : '▾'}
             </button>
             {mobileToolsOpen && (
               <div className="mobile-tools-list">
-                {toolsData.map((cat, idx) => (
-                  <div key={idx} className="mobile-tools-cat">
-                    <h4>{cat.category}</h4>
-                    {cat.items.map((item, i) => (
-                      <NavLink key={i} to={item.path} onClick={closeMenu}>
-                        {item.icon} {item.name}
-                        {item.isNew && <span className="badge badge-new" style={{ marginLeft: 'auto' }}>New</span>}
-                      </NavLink>
-                    ))}
-                  </div>
-                ))}
+                {toolsData.map((cat) => {
+                  const active = cat.items.filter(i => !i.comingSoon);
+                  if (!active.length) return null;
+                  return (
+                    <div key={cat.category} className="mobile-tools-cat">
+                      <h4>{cat.category}</h4>
+                      {active.map((item) => (
+                        <NavLink key={item.path} to={item.path} onClick={closeMenu}>
+                          {item.icon} {item.name}
+                          {item.isNew && <span className="badge badge-new" style={{ marginLeft: 'auto' }}>New</span>}
+                        </NavLink>
+                      ))}
+                    </div>
+                  );
+                })}
+                <Link to="/tools" onClick={closeMenu} className="mobile-browse-all">
+                  Browse all tools →
+                </Link>
               </div>
             )}
           </li>
@@ -148,7 +168,7 @@ const Navbar = () => {
           <li><NavLink to="/about"   onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>About</NavLink></li>
           <li><NavLink to="/privacy" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Privacy</NavLink></li>
           <li><NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Contact</NavLink></li>
-          <li><NavLink to="/blog"    onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Blog</NavLink></li>
+          {/* <li><NavLink to="/blog"    onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Blog</NavLink></li> */}
         </ul>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>

@@ -97,6 +97,18 @@ const PdfToPowerpoint = () => {
 
   return (
     <div className="tool-container">
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Convert PDF pages into PowerPoint slides. Each PDF page becomes a slide image in a .pptx file ready to edit in PowerPoint or Google Slides.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">📊 Editable PPTX</span>
+          <span className="tool-feat ok">✓ One slide per page</span>
+          <span className="tool-feat ok">✓ Password PDF support</span>
+          <span className="tool-feat ok">✓ High-res slides</span>
+          <span className="tool-feat inf">Compatible with PowerPoint &amp; Google Slides</span>
+        </div>
+      </div>
       {!file ? (
         <DropZone onFiles={handleFiles} multiple={false} accept=".pdf" label="Drop PDF here to convert to PPTX" />
       ) : (

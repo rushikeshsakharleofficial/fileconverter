@@ -129,6 +129,19 @@ const GifMaker = () => {
 
   return (
     <div>
+      {/* Info bar */}
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Turn any sequence of images into a smooth animated GIF. Drag frames to reorder, set custom delay speed, and download instantly.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">🎞️ Animated GIF</span>
+          <span className="tool-feat ok">✓ Drag to reorder</span>
+          <span className="tool-feat ok">✓ Custom frame delay</span>
+          <span className="tool-feat ok">✓ Batch frames</span>
+          <span className="tool-feat inf">Supports PNG · JPEG · WebP · HEIC</span>
+        </div>
+      </div>
       <div style={{ marginBottom: '1.5rem' }}>
         <DropZone onFiles={handleFiles} maxFiles={99999} label="Drop images to use as GIF frames" accept="image/*,.heic,.heif" />
         <div style={{ textAlign: 'center', marginTop: '1rem' }}>

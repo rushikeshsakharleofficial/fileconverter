@@ -13,7 +13,7 @@ const Tools = () => {
           <p className="section-subtitle fade-in delay-1">Every tool you need, running entirely in your browser</p>
 
           {toolsData.map((cat, idx) => (
-            <div key={idx} className="tools-category-section fade-in" style={{ animationDelay: `${idx * 0.04}s` }}>
+            <div key={idx} className={`tools-category-section fade-in delay-${Math.min(idx + 1, 9)}`}>
               <h3 className="category-heading">{cat.category}</h3>
               <div className="tool-cards-grid">
                 {cat.items.map((item, i) => (
@@ -22,7 +22,6 @@ const Tools = () => {
                     to={item.path}
                     className={`tool-card${item.comingSoon ? ' coming-soon' : ''}`}
                     style={{ '--card-color': item.color }}
-                    onClick={item.comingSoon ? undefined : undefined}
                   >
                     <div className="tool-card-icon">{item.icon}</div>
                     <h3>
@@ -30,6 +29,7 @@ const Tools = () => {
                       {item.isNew && <span className="badge badge-new">New</span>}
                     </h3>
                     <p>{item.desc}</p>
+                    {!item.comingSoon && <span className="tool-card-cta">Use Tool →</span>}
                   </Link>
                 ))}
               </div>

@@ -60,48 +60,66 @@ const PdfUnlocker = () => {
 
   return (
     <div>
-      <DropZone onFiles={handleFiles} multiple={false} maxFiles={1} accept="application/pdf" label="Drop an encrypted PDF file here" />
-      
+      {/* Info bar */}
+      <div className="tool-info-bar">
+        <p className="tool-info-desc">
+          Remove password protection from any PDF. Enter the correct password and download an unlocked copy — entirely in your browser, nothing is uploaded.
+        </p>
+        <div className="tool-feats">
+          <span className="tool-feat hi">🔓 Instant unlock</span>
+          <span className="tool-feat ok">✓ 100% private</span>
+          <span className="tool-feat ok">✓ No upload</span>
+          <span className="tool-feat ok">✓ Works offline</span>
+          <span className="tool-feat inf">Supports AES-128 &amp; AES-256 encrypted PDFs</span>
+        </div>
+      </div>
+
+      <DropZone onFiles={handleFiles} multiple={false} maxFiles={1} accept="application/pdf" label="Drop an encrypted PDF here — or click to browse" />
+
       {file && !unlockedUrl && (
-        <div className="glass fade-in visible" style={{ marginTop: '1rem', padding: '1.5rem' }}>
-          <h3 style={{ fontFamily: 'var(--heading)', fontSize: '1.2rem', color: 'var(--text)', marginBottom: '1rem' }}>
-            🔒 Unlock {file.name} ({formatSize(file.size)})
-          </h3>
-          
-          <div className="form-group" style={{ marginBottom: '1rem' }}>
+        <div className="tool-info-bar fade-in" style={{ marginTop: '1.25rem', gap: '1rem' }}>
+          <div className="tool-file-info" style={{ margin: 0 }}>
+            <span className="file-icon">🔒</span>
+            <div>
+              <div className="tool-file-name">{file.name}</div>
+              <div className="tool-file-size">{formatSize(file.size)}</div>
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: '0.5rem' }}>
             <label>PDF Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              placeholder="Enter password..."
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && password && handleUnlock()}
+              placeholder="Enter the document password…"
               disabled={isProcessing}
             />
           </div>
-          
-          {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontWeight: 600 }}>{error}</p>}
-          
-          <button className="btn btn-primary" onClick={handleUnlock} disabled={isProcessing || !password}>
-            {isProcessing ? 'Unlocking...' : '🔓 Unlock PDF'}
-          </button>
+
+          {error && <p className="text-danger" style={{ fontWeight: 600, fontSize: '0.875rem' }}>{error}</p>}
+
+          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button className="btn btn-primary" onClick={handleUnlock} disabled={isProcessing || !password}>
+              {isProcessing ? 'Unlocking…' : '🔓 Unlock PDF'}
+            </button>
+            <button className="btn btn-outline" onClick={() => { setFile(null); setPassword(''); setError(null); }}>
+              Remove
+            </button>
+          </div>
         </div>
       )}
 
       {unlockedUrl && (
-        <div className="glass fade-in visible" style={{ marginTop: '1rem', textAlign: 'center' }}>
-          <div className="icon" style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
-          <h3 style={{ fontFamily: 'var(--heading)', fontSize: '1.3rem', color: 'var(--text)', marginBottom: '0.5rem' }}>
-            Successfully Unlocked!
-          </h3>
-          <p style={{ color: 'var(--text2)', marginBottom: '1.5rem' }}>
-            New file size: <strong style={{color: 'var(--teal)'}}>{formatSize(unlockedSize)}</strong>
-          </p>
-          <button className="btn btn-primary" onClick={downloadFile}>
-            ⬇ Download Unlocked PDF
-          </button>
-          <button className="btn btn-outline" style={{ marginLeft: '1rem' }} onClick={() => setFile(null)}>
-            Unlock Another
-          </button>
+        <div className="tool-result-box fade-in">
+          <div className="tool-result-icon">🔓</div>
+          <div className="tool-result-title">PDF Unlocked Successfully</div>
+          <p className="tool-result-meta">Unlocked file size: <strong style={{ color: 'var(--success)' }}>{formatSize(unlockedSize)}</strong></p>
+          <div className="tool-result-actions">
+            <button className="btn btn-primary" onClick={downloadFile}>⬇ Download Unlocked PDF</button>
+            <button className="btn btn-outline" onClick={() => { setFile(null); setPassword(''); setUnlockedUrl(null); }}>Unlock Another</button>
+          </div>
         </div>
       )}
     </div>
