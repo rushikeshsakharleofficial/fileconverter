@@ -168,11 +168,11 @@ const FilePreviewRow = ({ file, config, onChangeConfig }) => {
   );
 };
 
-const UniversalConverter = () => {
+const UniversalConverter = ({ defaultOutputFormat = null }) => {
   const [files, setFiles] = useState([]);
   
   // Global baseline controls
-  const [outputFormat, setOutputFormat] = useState('image/jpeg');
+  const [outputFormat, setOutputFormat] = useState(defaultOutputFormat || 'image/jpeg');
   const [quality, setQuality] = useState(92);
   const [resizeEnabled, setResizeEnabled] = useState(false);
   const [resizeW, setResizeW] = useState(512);
@@ -186,6 +186,13 @@ const UniversalConverter = () => {
   const [zipping, setZipping] = useState(false);
   const [progressStage, setProgressStage] = useState('');
   const [progressValue, setProgressValue] = useState(0);
+
+  // Sync outputFormat if defaultOutputFormat changes
+  useEffect(() => {
+    if (defaultOutputFormat) {
+      setOutputFormat(defaultOutputFormat);
+    }
+  }, [defaultOutputFormat]);
 
   useEffect(() => {
     return () => {
@@ -334,7 +341,7 @@ const UniversalConverter = () => {
   return (
     <div>
       <DropZone onFiles={handleFiles} maxFiles={99999} accept="image/*,.heic,.heif"
-        label="Drop images to convert — supports PNG, JPG, WebP, HEIC, HEIF & more" />
+        label={`Drop images to convert ${defaultOutputFormat ? 'to ' + formats.find(f => f.value === defaultOutputFormat)?.label : ''} — supports PNG, JPG, WebP, HEIC, HEIF & more`} />
       <FolderUpload onFiles={handleFiles} />
 
       {files.length > 0 && (
@@ -342,12 +349,14 @@ const UniversalConverter = () => {
           <div className="controls-row" style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', background: 'var(--glass)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border)', marginBottom: '1.5rem' }}>
             <div style={{ fontWeight: 600, color: 'var(--text)' }}>Global Settings:</div>
             
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              Format:
-              <select value={outputFormat} onChange={e => { setOutputFormat(e.target.value); setResults([]); }} style={{ padding: '0.25rem' }}>
-                {formats.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
-              </select>
-            </label>
+            {!defaultOutputFormat && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                Format:
+                <select value={outputFormat} onChange={e => { setOutputFormat(e.target.value); setResults([]); }} style={{ padding: '0.25rem' }}>
+                  {formats.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+                </select>
+              </label>
+            )}
             
             {showsQuality && (
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>

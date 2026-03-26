@@ -35,6 +35,14 @@ const App = () => (
         <Route path="gif" element={<GifMaker />} />
         <Route path="pdf" element={<PdfUnlocker />} />
         <Route path="pdf-lock" element={<PdfLocker />} />
+        
+        {/* Image Conversion */}
+        <Route path="jpg-to-png" element={<UniversalConverter defaultOutputFormat="image/png" />} />
+        <Route path="png-to-jpg" element={<UniversalConverter defaultOutputFormat="image/jpeg" />} />
+        <Route path="webp-to-jpg" element={<UniversalConverter defaultOutputFormat="image/jpeg" />} />
+        <Route path="heic-to-jpg" element={<UniversalConverter defaultOutputFormat="image/jpeg" />} />
+        <Route path="bmp-to-png" element={<UniversalConverter defaultOutputFormat="image/png" />} />
+
         {/* Convert from PDF tools */}
         <Route path="pdf-to-jpg" element={<PdfToJpg />} />
         <Route path="pdf-to-word" element={<PdfToWord />} />

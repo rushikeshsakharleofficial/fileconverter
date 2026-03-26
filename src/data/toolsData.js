@@ -7,6 +7,16 @@ export const toolsData = [
     ]
   },
   {
+    category: "Image Conversion",
+    items: [
+      { name: "JPG to PNG", path: "/tools/jpg-to-png", icon: "🖼️", color: "#4a90d9", desc: "Convert JPG images to PNG format with transparency support." },
+      { name: "PNG to JPG", path: "/tools/png-to-jpg", icon: "🖼️", color: "#4a90d9", desc: "Convert PNG images to JPG format with custom quality settings." },
+      { name: "WebP to JPG", path: "/tools/webp-to-jpg", icon: "🖼️", color: "#4a90d9", desc: "Convert WebP images to JPG format for better compatibility." },
+      { name: "HEIC to JPG", path: "/tools/heic-to-jpg", icon: "🖼️", color: "#4a90d9", desc: "Convert Apple's HEIC images to standard JPG format." },
+      { name: "BMP to PNG", path: "/tools/bmp-to-png", icon: "🖼️", color: "#4a90d9", desc: "Convert BMP images to PNG format for web use." }
+    ]
+  },
+  {
     category: "Organize PDF",
     items: [
       { name: "Merge PDF", path: "/tools/merge-pdf", icon: "📁", color: "#e5322d", desc: "Combine PDFs in the order you want with the easiest PDF merger available." },
