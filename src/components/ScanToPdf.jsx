@@ -201,7 +201,16 @@ const ScanToPdf = () => {
                   </button>
                   <button
                     className="btn btn-outline btn-sm"
-                    style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1.1, minWidth: '5.2rem' }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      lineHeight: 1,
+                      width: '5.6rem',
+                      paddingLeft: 0,
+                      paddingRight: 0,
+                    }}
                     onClick={() => removeFile(i)}
                   >
                     Remove
