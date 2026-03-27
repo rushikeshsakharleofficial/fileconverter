@@ -1,42 +1,19 @@
 import { useEffect, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import DropZone from './DropZone';
 import formatSize from '../utils/formatSize';
 
-const parseRanges = (input, pageCount) => {
-  const cleaned = input.replace(/\s+/g, '');
-  if (!cleaned) return [];
-  const set = new Set();
-  const parts = cleaned.split(',');
-  for (const part of parts) {
-    if (!part) continue;
-    if (part.includes('-')) {
-      const [startRaw, endRaw] = part.split('-');
-      const start = Number(startRaw);
-      const end = Number(endRaw);
-      if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < 1 || start > end) {
-        throw new Error('Invalid range format.');
-      }
-      for (let i = start; i <= end; i += 1) {
-        if (i > pageCount) throw new Error('Page number out of bounds.');
-        set.add(i - 1);
-      }
-    } else {
-      const page = Number(part);
-      if (!Number.isInteger(page) || page < 1 || page > pageCount) {
-        throw new Error('Page number out of bounds.');
-      }
-      set.add(page - 1);
-    }
-  }
-  return [...set].sort((a, b) => a - b);
-};
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 const ExtractPages = () => {
   const [file, setFile] = useState(null);
   const [sourceBytes, setSourceBytes] = useState(null);
   const [pageCount, setPageCount] = useState(0);
-  const [rangeInput, setRangeInput] = useState('');
+  const [extractFlags, setExtractFlags] = useState([]);
+  const [pagePreviews, setPagePreviews] = useState([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [resultUrl, setResultUrl] = useState(null);
@@ -52,30 +29,56 @@ const ExtractPages = () => {
     if (!files.length) return;
     try {
       const selected = files[0];
-      const bytes = await selected.arrayBuffer();
+      const bytes = new Uint8Array(await selected.arrayBuffer());
       const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const count = pdf.getPageCount();
       setFile(selected);
       setSourceBytes(bytes);
-      setPageCount(pdf.getPageCount());
-      setRangeInput('');
+      setPageCount(count);
+      setExtractFlags(Array.from({ length: count }, () => false));
+      setPagePreviews(Array.from({ length: count }, () => null));
       setError(null);
       if (resultUrl) {
         URL.revokeObjectURL(resultUrl);
         setResultUrl(null);
       }
+
+      setPreviewLoading(true);
+      const previewPdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+      const previews = [];
+      for (let i = 1; i <= previewPdf.numPages; i += 1) {
+        const page = await previewPdf.getPage(i);
+        const viewport = page.getViewport({ scale: 0.4 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        previews.push(canvas.toDataURL('image/jpeg', 0.72));
+      }
+      setPagePreviews(previews);
     } catch (err) {
       console.error(err);
       setError('Could not read this PDF. Try another file.');
+    } finally {
+      setPreviewLoading(false);
     }
   };
+
+  const toggleExtract = (index) => {
+    setExtractFlags((prev) => prev.map((v, i) => (i === index ? !v : v)));
+  };
+
+  const selectAll = () => setExtractFlags(Array.from({ length: pageCount }, () => true));
+  const clearSelection = () => setExtractFlags(Array.from({ length: pageCount }, () => false));
 
   const extract = async () => {
     if (!sourceBytes) return;
     setIsProcessing(true);
     setError(null);
     try {
-      const indices = parseRanges(rangeInput, pageCount);
-      if (!indices.length) throw new Error('Please enter at least one page or range.');
+      const indices = extractFlags.map((include, i) => (include ? i : -1)).filter((i) => i >= 0);
+      if (!indices.length) throw new Error('Select at least one page to extract.');
       const src = await PDFDocument.load(sourceBytes, { ignoreEncryption: true });
       const out = await PDFDocument.create();
       const pages = await out.copyPages(src, indices);
@@ -103,9 +106,10 @@ const ExtractPages = () => {
   return (
     <div>
       <div className="tool-info-bar">
-        <p className="tool-info-desc">Extract specific pages to a new PDF. Use pages like 1,3,5-8.</p>
+        <p className="tool-info-desc">Extract specific pages to a new PDF using visual page previews.</p>
         <div className="tool-feats">
-          <span className="tool-feat hi">📄 Select page ranges</span>
+          <span className="tool-feat hi">🖼 Preview each page</span>
+          <span className="tool-feat ok">📄 Extract selected pages</span>
           <span className="tool-feat ok">✓ 100% private</span>
           <span className="tool-feat ok">✓ No upload</span>
         </div>
@@ -116,15 +120,31 @@ const ExtractPages = () => {
       {file && (
         <div className="tool-info-bar fade-in" style={{ marginTop: '1rem' }}>
           <p className="tool-info-desc">{file.name} ({formatSize(file.size)}) - {pageCount} pages</p>
-          <div className="form-group" style={{ marginBottom: '0.8rem' }}>
-            <label>Pages to extract</label>
-            <input
-              type="text"
-              value={rangeInput}
-              onChange={(e) => setRangeInput(e.target.value)}
-              placeholder="Example: 1,3,5-8"
-              disabled={isProcessing}
-            />
+          {previewLoading && (
+            <p className="tool-info-desc" style={{ marginBottom: '0.6rem' }}>
+              Rendering page previews...
+            </p>
+          )}
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
+            <button className="btn btn-outline btn-sm" onClick={selectAll} disabled={isProcessing || !pageCount}>Select All</button>
+            <button className="btn btn-outline btn-sm" onClick={clearSelection} disabled={isProcessing || !pageCount}>Clear</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem', marginBottom: '0.85rem' }}>
+            {extractFlags.map((extractPage, i) => (
+              <label key={i} style={{ border: `1px solid ${extractPage ? 'var(--primary)' : 'var(--border)'}`, borderRadius: '10px', padding: '0.55rem', display: 'grid', gap: '0.45rem', background: 'var(--bg2)', cursor: 'pointer' }}>
+                <div style={{ width: '100%', aspectRatio: '1 / 1.42', overflow: 'hidden', borderRadius: '8px', background: 'var(--bg3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {pagePreviews[i] ? (
+                    <img src={pagePreviews[i]} alt={`Page ${i + 1} preview`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  ) : (
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text3)' }}>Loading preview...</span>
+                  )}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                  <input type="checkbox" checked={extractPage} onChange={() => toggleExtract(i)} />
+                  <span>Page {i + 1}</span>
+                </div>
+              </label>
+            ))}
           </div>
           <button className="btn btn-primary" onClick={extract} disabled={isProcessing}>
             {isProcessing ? 'Extracting…' : 'Extract Pages'}
