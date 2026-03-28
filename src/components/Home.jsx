@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useRef, useCallback } from 'react';
 
 const FEATURES = [
   { icon: '🔄', title: 'Universal Converter', desc: 'Convert between PNG, JPG, WebP, AVIF, HEIC and more — fully in-browser.', link: '/tools/converter' },
@@ -8,6 +9,8 @@ const FEATURES = [
   { icon: '🖼️', title: 'PDF to JPG',           desc: 'Export every PDF page as a high-quality JPG image.',                     link: '/tools/pdf-to-jpg' },
   { icon: '📝', title: 'PDF to Word',          desc: 'Extract text from PDFs into editable .docx documents.',                  link: '/tools/pdf-to-word' },
 ];
+
+const CUBE_FACES = ['PDF', 'JPG', 'PNG', 'WebP', 'DOCX', 'GIF'];
 
 const TRUST = [
   'No Sign-up Required',
@@ -29,6 +32,38 @@ const STATS = [
   { num: '100%', lbl: 'Free forever'    },
 ];
 
+/* 3D Tilt wrapper — cards tilt toward mouse on hover */
+const TiltCard = ({ children, className, to, style }) => {
+  const ref = useRef(null);
+  const rafRef = useRef(null);
+
+  const handleMove = useCallback((e) => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      const el = ref.current;
+      if (!el) { rafRef.current = null; return; }
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      el.style.transform = `perspective(600px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) scale3d(1.03,1.03,1.03)`;
+      rafRef.current = null;
+    });
+  }, []);
+
+  const handleLeave = useCallback(() => {
+    const el = ref.current;
+    if (el) el.style.transform = '';
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+  }, []);
+
+  return (
+    <Link to={to} className={className} ref={ref} style={{ ...style, transformStyle: 'preserve-3d', transition: 'transform 0.2s ease-out' }}
+      onMouseMove={handleMove} onMouseLeave={handleLeave}>
+      {children}
+    </Link>
+  );
+};
+
 const Home = () => (
   <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
     {/* Floating ambient orbs */}
@@ -37,6 +72,17 @@ const Home = () => (
     <div className="hero-orb hero-orb-3" aria-hidden="true" />
 
     <div className="container fade-in">
+      {/* 3D Rotating Cube */}
+      <div className="hero-3d-scene" aria-hidden="true">
+        <div className="hero-cube">
+          {CUBE_FACES.map((label, i) => (
+            <div className={`hero-cube-face hero-cube-face-${i}`} key={i}>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="hero-eyebrow">✦ 100% free &amp; private — no account needed</div>
 
       <h1>
@@ -64,15 +110,15 @@ const Home = () => (
         ))}
       </div>
 
-      {/* Feature cards */}
+      {/* Feature cards — with 3D tilt */}
       <div className="features-grid" style={{ marginTop: '3.5rem' }}>
         {FEATURES.map((f, i) => (
-          <Link to={f.link} className="feature-card" key={i}>
+          <TiltCard to={f.link} className="feature-card" key={i}>
             <div className="icon">{f.icon}</div>
             <h3>{f.title}</h3>
             <p>{f.desc}</p>
             <span className="feature-card-arrow" aria-hidden="true">→</span>
-          </Link>
+          </TiltCard>
         ))}
       </div>
 
@@ -87,14 +133,19 @@ const Home = () => (
         ))}
       </div>
 
-      {/* How it works */}
+      {/* How it works — 3D flip step numbers */}
       <div className="how-it-works fade-in delay-5">
         <h2>How It Works</h2>
         <p className="subtitle">Three steps. No account. Completely private.</p>
         <div className="steps">
           {STEPS.map((s, i) => (
-            <div className="step" key={i}>
-              <div className="step-num">{s.n}</div>
+            <div className="step step-3d" key={i}>
+              <div className="step-num-3d">
+                <div className="step-num-inner">
+                  <div className="step-num-front">{s.n}</div>
+                  <div className="step-num-back">✓</div>
+                </div>
+              </div>
               <h3>{s.title}</h3>
               <p>{s.desc}</p>
             </div>
