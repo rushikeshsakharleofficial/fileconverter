@@ -39,11 +39,11 @@ export const toolsData = [
   {
     category: "Convert to PDF",
     items: [
-      { name: "JPG to PDF",          path: "/tools/jpg-to-pdf",         icon: "🖼️", color: "#f39c12", comingSoon: true, desc: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins." },
-      { name: "WORD to PDF",         path: "/tools/word-to-pdf",        icon: "📝", color: "#2b579a", comingSoon: true, desc: "Make DOC and DOCX files easy to read by converting them to PDF." },
-      { name: "POWERPOINT to PDF",   path: "/tools/powerpoint-to-pdf",  icon: "📊", color: "#d24726", comingSoon: true, desc: "Make PPT and PPTX slideshows easy to view by converting them to PDF." },
-      { name: "EXCEL to PDF",        path: "/tools/excel-to-pdf",       icon: "📈", color: "#217346", comingSoon: true, desc: "Make EXCEL spreadsheets easy to read by converting them to PDF." },
-      { name: "HTML to PDF",         path: "/tools/html-to-pdf",        icon: "🌐", color: "#e44d26", comingSoon: true, desc: "Convert webpages in HTML to PDF with a click." }
+      { name: "JPG to PDF",          path: "/tools/jpg-to-pdf",         icon: "🖼️", color: "#f39c12", desc: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins." },
+      { name: "WORD to PDF",         path: "/tools/word-to-pdf",        icon: "📝", color: "#2b579a", desc: "Make DOC and DOCX files easy to read by converting them to PDF." },
+      { name: "POWERPOINT to PDF",   path: "/tools/powerpoint-to-pdf",  icon: "📊", color: "#d24726", desc: "Make PPT and PPTX slideshows easy to view by converting them to PDF." },
+      { name: "EXCEL to PDF",        path: "/tools/excel-to-pdf",       icon: "📈", color: "#217346", desc: "Make EXCEL spreadsheets easy to read by converting them to PDF." },
+      { name: "HTML to PDF",         path: "/tools/html-to-pdf",        icon: "🌐", color: "#e44d26", desc: "Convert webpages in HTML to PDF with a click." }
     ]
   },
   {

@@ -29,6 +29,11 @@ const RemovePages = lazy(() => import('./components/RemovePages'));
 const ExtractPages = lazy(() => import('./components/ExtractPages'));
 const OrganizePdf = lazy(() => import('./components/OrganizePdf'));
 const ScanToPdf = lazy(() => import('./components/ScanToPdf'));
+const JpgToPdf = lazy(() => import('./components/JpgToPdf'));
+const WordToPdf = lazy(() => import('./components/WordToPdf'));
+const PowerpointToPdf = lazy(() => import('./components/PowerpointToPdf'));
+const ExcelToPdf = lazy(() => import('./components/ExcelToPdf'));
+const HtmlToPdf = lazy(() => import('./components/HtmlToPdf'));
 const Contact = lazy(() => import('./components/Contact'));
 
 const ScrollToTop = () => {
@@ -115,11 +120,11 @@ const App = () => (
           <Route path="ocr-pdf" element={<OcrTool type="pdf" />} />
 
           {/* Convert to PDF */}
-          <Route path="jpg-to-pdf" element={<ComingSoon />} />
-          <Route path="word-to-pdf" element={<ComingSoon />} />
-          <Route path="powerpoint-to-pdf" element={<ComingSoon />} />
-          <Route path="excel-to-pdf" element={<ComingSoon />} />
-          <Route path="html-to-pdf" element={<ComingSoon />} />
+          <Route path="jpg-to-pdf" element={<JpgToPdf />} />
+          <Route path="word-to-pdf" element={<WordToPdf />} />
+          <Route path="powerpoint-to-pdf" element={<PowerpointToPdf />} />
+          <Route path="excel-to-pdf" element={<ExcelToPdf />} />
+          <Route path="html-to-pdf" element={<HtmlToPdf />} />
 
           {/* Edit PDF */}
           <Route path="rotate-pdf" element={<ComingSoon />} />
