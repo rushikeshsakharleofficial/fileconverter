@@ -105,6 +105,29 @@ const Navbar = () => {
               Tools ▾
             </span>
             <div className={`tools-dropdown${megaOpen ? ' open' : ''}`}>
+              {/* Popular / Quick Access */}
+              <div className="tools-dd-popular">
+                <span className="tools-dd-popular-label">Popular</span>
+                <div className="tools-dd-popular-grid">
+                  {[
+                    { icon: '🔄', name: 'Converter', path: '/tools/converter' },
+                    { icon: '📁', name: 'Merge PDF', path: '/tools/merge-pdf' },
+                    { icon: '✂️', name: 'Split PDF', path: '/tools/split-pdf' },
+                    { icon: '🔓', name: 'Unlock PDF', path: '/tools/pdf' },
+                    { icon: '🖼️', name: 'PDF → JPG', path: '/tools/pdf-to-jpg' },
+                    { icon: '📝', name: 'PDF → Word', path: '/tools/pdf-to-word' },
+                    { icon: '🎞️', name: 'GIF Maker', path: '/tools/gif' },
+                    { icon: '🖼️', name: 'JPG → PDF', path: '/tools/jpg-to-pdf' },
+                  ].map(t => (
+                    <NavLink key={t.path} to={t.path} onClick={closeMenu}
+                      className={({ isActive }) => `tools-dd-pill${isActive ? ' active' : ''}`}>
+                      <span className="tdi-icon">{t.icon}</span>{t.name}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+
+              {/* All categories — compact */}
               <div className="tools-dropdown-grid">
                 {toolsData.map(cat => {
                   const active = cat.items.filter(i => !i.comingSoon);
@@ -143,6 +166,21 @@ const Navbar = () => {
             </button>
             {mobileToolsOpen && (
               <div className="mobile-tools-list">
+                {/* Popular quick links on mobile */}
+                <div className="mobile-tools-popular">
+                  {[
+                    { icon: '🔄', name: 'Converter', path: '/tools/converter' },
+                    { icon: '📁', name: 'Merge PDF', path: '/tools/merge-pdf' },
+                    { icon: '✂️', name: 'Split PDF', path: '/tools/split-pdf' },
+                    { icon: '🔓', name: 'Unlock PDF', path: '/tools/pdf' },
+                    { icon: '🖼️', name: 'PDF → JPG', path: '/tools/pdf-to-jpg' },
+                    { icon: '🎞️', name: 'GIF Maker', path: '/tools/gif' },
+                  ].map(t => (
+                    <NavLink key={t.path} to={t.path} onClick={closeMenu} className="mobile-popular-pill">
+                      {t.icon} {t.name}
+                    </NavLink>
+                  ))}
+                </div>
                 {toolsData.map((cat) => {
                   const active = cat.items.filter(i => !i.comingSoon);
                   if (!active.length) return null;
