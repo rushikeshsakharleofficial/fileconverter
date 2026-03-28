@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 import { htmlToPdfBytes } from '../utils/htmlToPdf';
 
@@ -91,6 +92,7 @@ const HtmlToPdf = () => {
           {isProcessing ? 'Creating PDF…' : 'Download PDF'}
         </button>
       </div>
+      <ToolProgressBar active={isProcessing} label="Rendering HTML to PDF…" />
 
       {error && <p className="text-danger" style={{ marginTop: '0.9rem', fontWeight: 600 }}>{error}</p>}
     </div>

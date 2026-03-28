@@ -3,6 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -14,6 +15,7 @@ const ExtractPages = () => {
   const [extractFlags, setExtractFlags] = useState([]);
   const [pagePreviews, setPagePreviews] = useState([]);
   const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewProgress, setPreviewProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [resultUrl, setResultUrl] = useState(null);
@@ -44,9 +46,11 @@ const ExtractPages = () => {
       }
 
       setPreviewLoading(true);
+      setPreviewProgress(0);
       const previewPdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
       const previews = [];
-      for (let i = 1; i <= previewPdf.numPages; i += 1) {
+      const n = previewPdf.numPages;
+      for (let i = 1; i <= n; i += 1) {
         const page = await previewPdf.getPage(i);
         const viewport = page.getViewport({ scale: 0.4 });
         const canvas = document.createElement('canvas');
@@ -55,6 +59,7 @@ const ExtractPages = () => {
         const ctx = canvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport }).promise;
         previews.push(canvas.toDataURL('image/jpeg', 0.72));
+        setPreviewProgress(Math.round((i / n) * 100));
       }
       setPagePreviews(previews);
     } catch (err) {
@@ -62,6 +67,7 @@ const ExtractPages = () => {
       setError('Could not read this PDF. Try another file.');
     } finally {
       setPreviewLoading(false);
+      setPreviewProgress(0);
     }
   };
 
@@ -120,11 +126,11 @@ const ExtractPages = () => {
       {file && (
         <div className="tool-info-bar fade-in" style={{ marginTop: '1rem' }}>
           <p className="tool-info-desc">{file.name} ({formatSize(file.size)}) - {pageCount} pages</p>
-          {previewLoading && (
-            <p className="tool-info-desc" style={{ marginBottom: '0.6rem' }}>
-              Rendering page previews...
-            </p>
-          )}
+          <ToolProgressBar
+            active={previewLoading}
+            label="Rendering page previews…"
+            value={previewProgress}
+          />
           <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.8rem' }}>
             <button className="btn btn-outline btn-sm" onClick={selectAll} disabled={isProcessing || !pageCount}>Select All</button>
             <button className="btn btn-outline btn-sm" onClick={clearSelection} disabled={isProcessing || !pageCount}>Clear</button>
@@ -149,6 +155,7 @@ const ExtractPages = () => {
           <button className="btn btn-primary" onClick={extract} disabled={isProcessing}>
             {isProcessing ? 'Extracting…' : 'Extract Pages'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Building PDF…" />
         </div>
       )}
 

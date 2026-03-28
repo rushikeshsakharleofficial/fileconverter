@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import mammoth from 'mammoth';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 import { htmlToPdfBytes } from '../utils/htmlToPdf';
 
@@ -82,6 +83,7 @@ const WordToPdf = () => {
           <button type="button" className="btn btn-primary" onClick={convert} disabled={isProcessing}>
             {isProcessing ? 'Converting…' : 'Download PDF'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Converting to PDF…" />
         </div>
       )}
 

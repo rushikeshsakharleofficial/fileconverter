@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
@@ -156,10 +157,7 @@ const PdfToWord = () => {
             </div>
           ) : processing ? (
             <div className="mt-4">
-              <p>Extracting text to Word... {progress}%</p>
-              <div className="progress-bar">
-                <div className="progress-fill animated" style={{ width: `${progress}%` }}></div>
-              </div>
+              <ToolProgressBar active label="Extracting text to Word…" value={progress} />
             </div>
           ) : !downloadUrl ? (
             <div className="mt-3">

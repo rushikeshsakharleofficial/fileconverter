@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 const reorder = (items, from, to) => {
@@ -18,6 +19,7 @@ const JpgToPdf = () => {
   const [dragOverIndex, setDragOverIndex] = useState(null);
   const [marginPt, setMarginPt] = useState(40);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -97,9 +99,11 @@ const JpgToPdf = () => {
     if (!files.length) return;
     setIsProcessing(true);
     setError(null);
+    setProgress(0);
     try {
       const pdf = await PDFDocument.create();
       const m = marginPt;
+      const total = files.length;
 
       const webpToPngBytes = async (buf) => {
         const blob = new Blob([buf], { type: 'image/webp' });
@@ -115,7 +119,8 @@ const JpgToPdf = () => {
         return pngBlob.arrayBuffer();
       };
 
-      for (const item of files) {
+      for (let idx = 0; idx < total; idx += 1) {
+        const item = files[idx];
         const file = item.file;
         const name = file.name.toLowerCase();
         const bytes = await file.arrayBuffer();
@@ -136,6 +141,7 @@ const JpgToPdf = () => {
         const pageH = ih + m * 2;
         const page = pdf.addPage([pageW, pageH]);
         page.drawImage(embedded, { x: m, y: m, width: iw, height: ih });
+        setProgress(Math.round(((idx + 1) / total) * 100));
       }
 
       const out = await pdf.save();
@@ -151,6 +157,7 @@ const JpgToPdf = () => {
       setError(err.message || 'Failed to create PDF.');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -227,6 +234,7 @@ const JpgToPdf = () => {
           <button type="button" className="btn btn-primary" onClick={buildPdf} disabled={isProcessing}>
             {isProcessing ? 'Creating PDF…' : 'Download PDF'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Creating PDF…" value={progress} />
         </div>
       )}
 

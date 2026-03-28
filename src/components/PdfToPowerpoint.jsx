@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import pptxgen from 'pptxgenjs';
@@ -138,10 +139,7 @@ const PdfToPowerpoint = () => {
             </div>
           ) : processing ? (
             <div className="mt-4">
-              <p>Converting to PowerPoint... {progress}%</p>
-              <div className="progress-bar">
-                <div className="progress-fill animated" style={{ width: `${progress}%` }}></div>
-              </div>
+              <ToolProgressBar active label="Converting to PowerPoint…" value={progress} />
             </div>
           ) : !downloadUrl ? (
             <button className="btn btn-primary mt-3" onClick={() => processPdf()}>Convert to POWERPOINT</button>

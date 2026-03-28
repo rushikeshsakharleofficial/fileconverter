@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 const OrganizePdf = () => {
@@ -134,6 +135,7 @@ const OrganizePdf = () => {
               Reset
             </button>
           </div>
+          <ToolProgressBar active={isProcessing} label="Generating PDF…" />
         </div>
       )}
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import GIF from 'gif.js';
 import heic2any from 'heic2any';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import FolderUpload from './FolderUpload';
 import formatSize from '../utils/formatSize';
 import isHeic from '../utils/isHeic';
@@ -184,11 +185,7 @@ const GifMaker = () => {
               {processing ? `Generating… ${progress}%` : '🎞️ Generate GIF'}
             </button>
           </div>
-          {processing && (
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: progress + '%' }} />
-            </div>
-          )}
+          <ToolProgressBar active={processing} label="Generating GIF…" value={progress} />
           {error && <p style={{ color: '#f87171', marginTop: '.5rem' }}>Error: {error}</p>}
           <p style={{ color: 'var(--text2)', fontSize: '.85rem' }}>
             {frames.length} frame{frames.length !== 1 ? 's' : ''} • {delay}ms delay

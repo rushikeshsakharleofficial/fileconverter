@@ -3,6 +3,7 @@ import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -14,6 +15,7 @@ const RemovePages = () => {
   const [removeFlags, setRemoveFlags] = useState([]);
   const [pagePreviews, setPagePreviews] = useState([]);
   const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewProgress, setPreviewProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
   const [resultUrl, setResultUrl] = useState(null);
@@ -44,11 +46,13 @@ const RemovePages = () => {
       }
 
       setPreviewLoading(true);
+      setPreviewProgress(0);
       // Use a cloned byte array so preview rendering cannot mutate/detach
       // the source bytes needed later for final PDF processing.
       const previewPdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
       const previews = [];
-      for (let i = 1; i <= previewPdf.numPages; i += 1) {
+      const n = previewPdf.numPages;
+      for (let i = 1; i <= n; i += 1) {
         const page = await previewPdf.getPage(i);
         const viewport = page.getViewport({ scale: 0.4 });
         const canvas = document.createElement('canvas');
@@ -57,6 +61,7 @@ const RemovePages = () => {
         const ctx = canvas.getContext('2d');
         await page.render({ canvasContext: ctx, viewport }).promise;
         previews.push(canvas.toDataURL('image/jpeg', 0.72));
+        setPreviewProgress(Math.round((i / n) * 100));
       }
       setPagePreviews(previews);
     } catch (err) {
@@ -64,6 +69,7 @@ const RemovePages = () => {
       setError('Could not read this PDF. Try another file.');
     } finally {
       setPreviewLoading(false);
+      setPreviewProgress(0);
     }
   };
 
@@ -123,11 +129,11 @@ const RemovePages = () => {
       {file && (
         <div className="tool-info-bar fade-in" style={{ marginTop: '1rem' }}>
           <p className="tool-info-desc">{file.name} ({formatSize(file.size)}) - {pageCount} pages</p>
-          {previewLoading && (
-            <p className="tool-info-desc" style={{ marginBottom: '0.6rem' }}>
-              Rendering page previews...
-            </p>
-          )}
+          <ToolProgressBar
+            active={previewLoading}
+            label="Rendering page previews…"
+            value={previewProgress}
+          />
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem', margin: '0.75rem 0' }}>
             {removeFlags.map((remove, i) => (
               <label key={i} style={{ border: `1px solid ${remove ? 'var(--danger)' : 'var(--border)'}`, borderRadius: '10px', padding: '0.55rem', display: 'grid', gap: '0.45rem', background: 'var(--bg2)', cursor: 'pointer', opacity: remove ? 0.72 : 1 }}>
@@ -148,6 +154,7 @@ const RemovePages = () => {
           <button className="btn btn-primary" onClick={applyRemoval} disabled={isProcessing}>
             {isProcessing ? 'Processing…' : 'Remove Selected Pages'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Building PDF…" />
         </div>
       )}
 

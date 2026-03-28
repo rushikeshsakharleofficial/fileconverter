@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { decryptPDF } from '@pdfsmaller/pdf-decrypt';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 const PdfUnlocker = () => {
@@ -108,6 +109,7 @@ const PdfUnlocker = () => {
               Remove
             </button>
           </div>
+          <ToolProgressBar active={isProcessing} label="Decrypting PDF…" />
         </div>
       )}
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import { PDFDocument } from 'pdf-lib';
 import { isEncryptedError } from '../utils/pdfPasswordCheck';
 
@@ -109,10 +110,7 @@ const PdfToPdfA = () => {
             </div>
           ) : processing ? (
             <div className="mt-4">
-              <p>Optimizing and flattening for archive...</p>
-              <div className="progress-bar">
-                <div className="progress-fill animated" style={{ width: `100%` }}></div>
-              </div>
+              <ToolProgressBar active label="Optimizing and flattening for archive…" />
             </div>
           ) : !downloadUrl ? (
             <div className="mt-3">

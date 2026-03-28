@@ -2,11 +2,13 @@ import { useState } from 'react';
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 
 const SplitPdf = () => {
   const [file, setFile] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
@@ -30,16 +32,19 @@ const SplitPdf = () => {
     if (!file) return;
     setIsProcessing(true);
     setError(null);
+    setProgress(0);
     try {
       const bytes = await file.arrayBuffer();
       const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
       const zip = new JSZip();
-      for (let i = 0; i < src.getPageCount(); i += 1) {
+      const total = src.getPageCount();
+      for (let i = 0; i < total; i += 1) {
         const onePagePdf = await PDFDocument.create();
         const [page] = await onePagePdf.copyPages(src, [i]);
         onePagePdf.addPage(page);
         const out = await onePagePdf.save();
         zip.file(`page-${i + 1}.pdf`, out);
+        setProgress(Math.round(((i + 1) / total) * 100));
       }
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       const url = URL.createObjectURL(zipBlob);
@@ -54,6 +59,7 @@ const SplitPdf = () => {
       setError('Failed to split PDF.');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -77,6 +83,7 @@ const SplitPdf = () => {
           <button className="btn btn-primary" onClick={splitAndDownload} disabled={isProcessing}>
             {isProcessing ? 'Splitting…' : 'Split PDF to ZIP'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Splitting PDF…" value={progress} />
         </div>
       )}
 

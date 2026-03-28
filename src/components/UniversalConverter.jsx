@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import heic2any from 'heic2any';
 import JSZip from 'jszip';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import FolderUpload from './FolderUpload';
 import formatSize from '../utils/formatSize';
 import isHeic from '../utils/isHeic';
@@ -369,17 +370,13 @@ const UniversalConverter = ({ defaultOutputFormat = null }) => {
             </button>
           </div>
 
-          {progressStage && (
-            <div className="progress-container fade-in visible" style={{ margin: '1rem 0', padding: '1rem', background: 'var(--glass)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '0.5rem', color: 'var(--text)', fontWeight: 600 }}>
-                <span>{progressStage}</span>
-                <span>{progressValue}%</span>
-              </div>
-              <div style={{ width: '100%', height: '8px', background: 'var(--border)', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${progressValue}%`, height: '100%', background: 'var(--teal)', transition: 'width 0.2s ease', borderRadius: '4px' }} />
-              </div>
-            </div>
-          )}
+          <ToolProgressBar
+            active={!!progressStage}
+            label={progressStage || 'Processing…'}
+            value={progressValue}
+            className="fade-in visible"
+            style={{ margin: '1rem 0' }}
+          />
 
           {/* Individual Image Previews */}
           {results.length === 0 && (

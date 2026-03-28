@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { encryptPDF } from '@pdfsmaller/pdf-encrypt-lite';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 const PdfLocker = () => {
@@ -107,6 +108,7 @@ const PdfLocker = () => {
               Remove
             </button>
           </div>
+          <ToolProgressBar active={isProcessing} label="Encrypting PDF…" />
         </div>
       )}
 

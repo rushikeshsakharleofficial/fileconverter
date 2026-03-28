@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 import { extractPptxSlideTexts } from '../utils/pptxExtractText';
 
@@ -24,6 +25,7 @@ const wrapLines = (text, maxChars) => {
 const PowerpointToPdf = () => {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
 
   const handleFiles = (files) => {
@@ -42,6 +44,7 @@ const PowerpointToPdf = () => {
     if (!file) return;
     setIsProcessing(true);
     setError(null);
+    setProgress(0);
     try {
       const buf = await file.arrayBuffer();
       const slides = await extractPptxSlideTexts(buf);
@@ -51,8 +54,10 @@ const PowerpointToPdf = () => {
       const lineHeight = size * 1.35;
       const margin = 50;
       const maxChars = 95;
+      const total = slides.length || 1;
 
-      slides.forEach((raw, idx) => {
+      for (let idx = 0; idx < slides.length; idx += 1) {
+        const raw = slides[idx];
         const text = raw.trim() || '(No text found on this slide — charts and images are not extracted.)';
         const page = pdf.addPage();
         const { height } = page.getSize();
@@ -71,7 +76,8 @@ const PowerpointToPdf = () => {
           page.drawText(line, { x: margin, y, size, font, color: rgb(0.1, 0.1, 0.12) });
           y -= lineHeight;
         }
-      });
+        setProgress(Math.round(((idx + 1) / total) * 100));
+      }
 
       const bytes = await pdf.save();
       const blob = new Blob([bytes], { type: 'application/pdf' });
@@ -86,6 +92,7 @@ const PowerpointToPdf = () => {
       setError(err.message || 'Failed to convert presentation.');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -116,6 +123,7 @@ const PowerpointToPdf = () => {
           <button type="button" className="btn btn-primary" onClick={convert} disabled={isProcessing}>
             {isProcessing ? 'Converting…' : 'Download PDF'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Building PDF…" value={progress} />
         </div>
       )}
 

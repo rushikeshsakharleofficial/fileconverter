@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import JSZip from 'jszip';
@@ -128,10 +129,7 @@ const PdfToJpg = () => {
             </div>
           ) : processing ? (
             <div className="mt-4">
-              <p>Converting to JPG... {progress}%</p>
-              <div className="progress-bar">
-                <div className="progress-fill animated" style={{ width: `${progress}%` }}></div>
-              </div>
+              <ToolProgressBar active label="Converting to JPG…" value={progress} />
             </div>
           ) : !downloadUrl ? (
             <button className="btn btn-primary mt-3" onClick={() => processPdf()}>Convert to JPG</button>

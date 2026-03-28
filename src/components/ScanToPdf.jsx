@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 
 const reorder = (items, from, to) => {
   if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) return items;
@@ -16,6 +17,7 @@ const ScanToPdf = () => {
   const [dragIndex, setDragIndex] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [isReady, setIsReady] = useState(false);
 
@@ -99,9 +101,12 @@ const ScanToPdf = () => {
     if (!files.length) return;
     setIsProcessing(true);
     setError(null);
+    setProgress(0);
     try {
       const pdf = await PDFDocument.create();
-      for (const item of files) {
+      const total = files.length;
+      for (let idx = 0; idx < total; idx += 1) {
+        const item = files[idx];
         const file = item.file;
         const name = file.name.toLowerCase();
         const bytes = await file.arrayBuffer();
@@ -115,6 +120,7 @@ const ScanToPdf = () => {
         }
         const page = pdf.addPage([embedded.width, embedded.height]);
         page.drawImage(embedded, { x: 0, y: 0, width: embedded.width, height: embedded.height });
+        setProgress(Math.round(((idx + 1) / total) * 100));
       }
 
       const out = await pdf.save();
@@ -131,6 +137,7 @@ const ScanToPdf = () => {
       setError(err.message || 'Failed to create PDF from images.');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -222,6 +229,7 @@ const ScanToPdf = () => {
           <button className="btn btn-primary" onClick={convert} disabled={isProcessing}>
             {isProcessing ? 'Creating PDF…' : 'Create PDF'}
           </button>
+          <ToolProgressBar active={isProcessing} label="Creating PDF…" value={progress} />
         </div>
       )}
 

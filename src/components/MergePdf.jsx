@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import formatSize from '../utils/formatSize';
 
 const MergePdf = () => {
   const [files, setFiles] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [resultUrl, setResultUrl] = useState(null);
   const [resultSize, setResultSize] = useState(0);
@@ -43,14 +45,17 @@ const MergePdf = () => {
     if (files.length < 2) return;
     setIsProcessing(true);
     setError(null);
+    setProgress(0);
     try {
       const output = await PDFDocument.create();
-      for (const file of files) {
+      for (let i = 0; i < files.length; i += 1) {
+        const file = files[i];
         const bytes = await file.arrayBuffer();
         const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
         const pageIndices = src.getPageIndices();
         const pages = await output.copyPages(src, pageIndices);
         pages.forEach((p) => output.addPage(p));
+        setProgress(Math.round(((i + 1) / files.length) * 100));
       }
       const outBytes = await output.save();
       const blob = new Blob([outBytes], { type: 'application/pdf' });
@@ -62,6 +67,7 @@ const MergePdf = () => {
       setError('Failed to merge PDFs. Make sure all files are valid PDFs.');
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
@@ -111,6 +117,7 @@ const MergePdf = () => {
               {isProcessing ? 'Merging…' : 'Merge PDFs'}
             </button>
           </div>
+          <ToolProgressBar active={isProcessing} label="Merging PDFs…" value={progress} />
         </div>
       )}
 

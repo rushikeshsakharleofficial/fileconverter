@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import * as XLSX from 'xlsx';
@@ -176,10 +177,7 @@ const PdfToExcel = () => {
             </div>
           ) : processing ? (
             <div className="mt-4">
-              <p>Extracting tables to Excel... {progress}%</p>
-              <div className="progress-bar">
-                <div className="progress-fill animated" style={{ width: `${progress}%` }}></div>
-              </div>
+              <ToolProgressBar active label="Extracting tables to Excel…" value={progress} />
             </div>
           ) : !downloadUrl ? (
             <div className="mt-3">

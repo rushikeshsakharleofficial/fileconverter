@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DropZone from './DropZone';
+import ToolProgressBar from './ToolProgressBar';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { createWorker } from 'tesseract.js';
@@ -150,10 +151,7 @@ const OcrTool = ({ type = 'image' }) => {
             </div>
           ) : processing ? (
             <div className="mt-4">
-              <p>Recognizing text... {progress}%</p>
-              <div className="progress-bar">
-                <div className="progress-fill animated" style={{ width: `${progress}%` }}></div>
-              </div>
+              <ToolProgressBar active label="Recognizing text…" value={progress} />
             </div>
           ) : !result ? (
             <button className="btn btn-primary mt-3" onClick={() => processFile()}>Extract Text (OCR)</button>
