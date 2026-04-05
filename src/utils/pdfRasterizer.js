@@ -13,6 +13,7 @@ if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
  * @param {number} pageNum - The 1-indexed page number to rasterize.
  * @param {Object} [options={}] - Rendering options.
  * @param {number} [options.scale=1.5] - The base scale factor.
+ * @param {string} [options.password] - The password for encrypted PDFs.
  * @param {boolean} [options.useDPR=true] - Whether to multiply scale by window.devicePixelRatio for high-DPI.
  * @param {boolean} [options.returnImageData=false] - If true, returns ImageData instead of HTMLCanvasElement.
  * @returns {Promise<HTMLCanvasElement|ImageData>}
@@ -20,6 +21,7 @@ if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
 export async function rasterizePage(source, pageNum, options = {}) {
   const { 
     scale = 1.5, 
+    password = null,
     useDPR = true, 
     returnImageData = false 
   } = options;
@@ -32,9 +34,10 @@ export async function rasterizePage(source, pageNum, options = {}) {
     pdf = source;
   } else {
     // Load the document
-    loadingTask = pdfjsLib.getDocument(
-      typeof source === 'string' ? source : { data: source }
-    );
+    const loadingParams = typeof source === 'string' ? { url: source } : { data: source };
+    if (password) loadingParams.password = password;
+    
+    loadingTask = pdfjsLib.getDocument(loadingParams);
     pdf = await loadingTask.promise;
   }
 
