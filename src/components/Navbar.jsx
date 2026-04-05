@@ -38,7 +38,7 @@ const Navbar = () => {
     const next = isDark ? 'light' : 'dark';
     setIsDark(!isDark);
     document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem(THEME_KEY, next); } catch {}
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* ignore */ }
   };
 
   // Apply theme on mount

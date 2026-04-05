@@ -190,7 +190,6 @@ const App = () => (
           {/* PDF Intelligence */}
           <Route path="ai-summarizer" element={<ComingSoon />} />
           <Route path="translate-pdf" element={<ComingSoon />} />
-          <Route path="demo" element={<Demo />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>
