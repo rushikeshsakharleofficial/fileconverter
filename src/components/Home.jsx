@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useRef, useCallback } from 'react';
-import DemoOne from './ui/demo';
 
 const FEATURES = [
-  { icon: '🔄', title: 'Universal Converter', desc: 'Convert between PNG, JPG, WebP, AVIF, HEIC and more — fully in-browser.', link: '/tools/converter' },
-  { icon: '🎞️', title: 'GIF Maker',           desc: 'Turn any sequence of images into a smooth, looping animated GIF.',        link: '/tools/gif' },
-  { icon: '🔓', title: 'Unlock PDF',           desc: 'Remove password protection from any PDF file instantly.',                  link: '/tools/pdf' },
-  { icon: '🔐', title: 'Protect PDF',          desc: 'Add strong password encryption to your PDF documents.',                   link: '/tools/pdf-lock' },
-  { icon: '🖼️', title: 'PDF to JPG',           desc: 'Export every PDF page as a high-quality JPG image.',                     link: '/tools/pdf-to-jpg' },
-  { icon: '📝', title: 'PDF to Word',          desc: 'Extract text from PDFs into editable .docx documents.',                  link: '/tools/pdf-to-word' },
+  { icon: '🔄', title: 'Universal Converter', desc: 'Convert between PNG, JPG, WebP, AVIF, HEIC and more - fully in-browser.', link: '/tools/converter' },
+  { icon: '🎞️', title: 'GIF Maker', desc: 'Turn any sequence of images into a smooth, looping animated GIF.', link: '/tools/gif' },
+  { icon: '🔓', title: 'Unlock PDF', desc: 'Remove password protection from any PDF file instantly.', link: '/tools/pdf' },
+  { icon: '🔐', title: 'Protect PDF', desc: 'Add strong password encryption to your PDF documents.', link: '/tools/pdf-lock' },
+  { icon: '🖼️', title: 'PDF to JPG', desc: 'Export every PDF page as a high-quality JPG image.', link: '/tools/pdf-to-jpg' },
+  { icon: '📝', title: 'PDF to Word', desc: 'Extract text from PDFs into editable .docx documents.', link: '/tools/pdf-to-word' },
 ];
+
+const CUBE_FACES = ['PDF', 'JPG', 'PNG', 'WebP', 'DOCX', 'GIF'];
 
 const TRUST = [
   'No Sign-up Required',
@@ -20,18 +21,17 @@ const TRUST = [
 ];
 
 const STEPS = [
-  { n: '01', title: 'Pick a Tool',   desc: 'Choose from our collection of PDF & image tools' },
-  { n: '02', title: 'Upload Files',  desc: 'Drag & drop or click to select your files' },
-  { n: '03', title: 'Download',      desc: 'Get your processed file instantly — no waiting' },
+  { n: '01', title: 'Pick a Tool', desc: 'Choose from our collection of PDF & image tools' },
+  { n: '02', title: 'Upload Files', desc: 'Drag & drop or click to select your files' },
+  { n: '03', title: 'Download', desc: 'Get your processed file instantly - no waiting' },
 ];
 
 const STATS = [
-  { num: '40+',  lbl: 'Tools available' },
-  { num: '15+',  lbl: 'File formats'    },
-  { num: '100%', lbl: 'Free forever'    },
+  { num: '40+', lbl: 'Tools available' },
+  { num: '15+', lbl: 'File formats' },
+  { num: '100%', lbl: 'Free forever' },
 ];
 
-/* 3D Tilt wrapper — cards tilt toward mouse on hover */
 const TiltCard = ({ children, className, to, style }) => {
   const ref = useRef(null);
   const rafRef = useRef(null);
@@ -40,7 +40,10 @@ const TiltCard = ({ children, className, to, style }) => {
     if (rafRef.current) return;
     rafRef.current = requestAnimationFrame(() => {
       const el = ref.current;
-      if (!el) { rafRef.current = null; return; }
+      if (!el) {
+        rafRef.current = null;
+        return;
+      }
       const rect = el.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -52,12 +55,21 @@ const TiltCard = ({ children, className, to, style }) => {
   const handleLeave = useCallback(() => {
     const el = ref.current;
     if (el) el.style.transform = '';
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
   }, []);
 
   return (
-    <Link to={to} className={className} ref={ref} style={{ ...style, transformStyle: 'preserve-3d', transition: 'transform 0.2s ease-out' }}
-      onMouseMove={handleMove} onMouseLeave={handleLeave}>
+    <Link
+      to={to}
+      className={className}
+      ref={ref}
+      style={{ ...style, transformStyle: 'preserve-3d', transition: 'transform 0.2s ease-out' }}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+    >
       {children}
     </Link>
   );
@@ -65,24 +77,32 @@ const TiltCard = ({ children, className, to, style }) => {
 
 const Home = () => (
   <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
-    {/* Floating ambient orbs */}
     <div className="hero-orb hero-orb-1" aria-hidden="true" />
     <div className="hero-orb hero-orb-2" aria-hidden="true" />
     <div className="hero-orb hero-orb-3" aria-hidden="true" />
 
     <div className="container fade-in">
-      <DemoOne />
+      <div className="hero-3d-scene" aria-hidden="true">
+        <div className="hero-cube">
+          {CUBE_FACES.map((label, i) => (
+            <div className={`hero-cube-face hero-cube-face-${i}`} key={i}>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
-      <div className="hero-eyebrow">✦ 100% free &amp; private — no account needed</div>
+      <div className="hero-eyebrow">✦ 100% free &amp; private - no account needed</div>
 
       <h1>
-        Every tool you need for<br />
+        Every tool you need for
+        <br />
         <span className="accent">PDFs &amp; Images</span>
       </h1>
 
       <p className="hero-desc">
         Convert, compress, merge, protect and unlock files right in your browser.
-        Nothing is uploaded to any server — ever.
+        Nothing is uploaded to any server - ever.
       </p>
 
       <div className="hero-cta">
@@ -90,7 +110,6 @@ const Home = () => (
         <Link to="/about" className="btn btn-outline">How it works</Link>
       </div>
 
-      {/* Stats bar */}
       <div className="hero-stats fade-in delay-2">
         {STATS.map((s, i) => (
           <div className="hero-stat" key={i}>
@@ -100,7 +119,6 @@ const Home = () => (
         ))}
       </div>
 
-      {/* Feature cards — with 3D tilt */}
       <div className="features-grid" style={{ marginTop: '3.5rem' }}>
         {FEATURES.map((f, i) => (
           <TiltCard to={f.link} className="feature-card" key={i}>
@@ -114,16 +132,15 @@ const Home = () => (
 
       <div className="section-divider" />
 
-      {/* Trust strip */}
       <div className="trust-strip fade-in delay-4">
         {TRUST.map((t, i) => (
           <div className="trust-item" key={i}>
-            <span className="dot" />{t}
+            <span className="dot" />
+            {t}
           </div>
         ))}
       </div>
 
-      {/* How it works — 3D flip step numbers */}
       <div className="how-it-works fade-in delay-5">
         <h2>How It Works</h2>
         <p className="subtitle">Three steps. No account. Completely private.</p>
