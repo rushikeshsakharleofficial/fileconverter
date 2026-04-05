@@ -35,6 +35,7 @@ const PowerpointToPdf = lazy(() => import('./components/PowerpointToPdf'));
 const ExcelToPdf = lazy(() => import('./components/ExcelToPdf'));
 const HtmlToPdf = lazy(() => import('./components/HtmlToPdf'));
 const Contact = lazy(() => import('./components/Contact'));
+const Demo = lazy(() => import('./components/ui/demo.tsx'));
 
 const PAGE_TITLES = {
   '/': 'PixConvert — Free Online PDF & Image Converter',
@@ -69,6 +70,7 @@ const PAGE_TITLES = {
   '/tools/bmp-to-png': 'BMP to PNG — PixConvert',
   '/tools/photo-to-markdown': 'Photo to Markdown (OCR) — PixConvert',
   '/tools/ocr-pdf': 'OCR PDF — PixConvert',
+  '/tools/demo': 'Demo — PixConvert',
 };
 
 const ScrollToTop = () => {
@@ -179,6 +181,7 @@ const App = () => (
           {/* PDF Intelligence */}
           <Route path="ai-summarizer" element={<ComingSoon />} />
           <Route path="translate-pdf" element={<ComingSoon />} />
+          <Route path="demo" element={<Demo />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>
