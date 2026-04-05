@@ -10,10 +10,6 @@ const FEATURES = [
   { icon: '🔐', title: 'Protect PDF', desc: 'Add strong password encryption to your PDF documents.', link: '/tools/pdf-lock' },
   { icon: '🖼️', title: 'PDF to JPG', desc: 'Export every PDF page as a high-quality JPG image.', link: '/tools/pdf-to-jpg' },
   { icon: '📝', title: 'PDF to Word', desc: 'Extract text from PDFs into editable .docx documents.', link: '/tools/pdf-to-word' },
-  { icon: '✍️', title: 'Sign PDF', desc: 'Add a drawn, typed, or uploaded signature and export the signed PDF privately.', link: '/tools/sign-pdf' },
-  { icon: '⬛', title: 'Redact PDF', desc: 'Burn redactions into the final PDF to permanently remove sensitive content.', link: '/tools/redact-pdf' },
-  { icon: '⚖️', title: 'Compare PDF', desc: 'Compare two PDF pages side by side and generate a visual diff in-browser.', link: '/tools/compare-pdf' },
-  { icon: '📁', title: 'Merge PDF', desc: 'Combine multiple PDF files into a single document in the order you choose.', link: '/tools/merge-pdf' },
 ];
 
 const TRUST = [

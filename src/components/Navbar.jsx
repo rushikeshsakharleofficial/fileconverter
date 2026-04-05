@@ -1,8 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-
 import { toolsData } from '../data/toolsData';
-import AppMenuBar from './ui/app-menu-bar';
 
 const SunIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -45,7 +43,7 @@ const Navbar = () => {
     try {
       localStorage.setItem(THEME_KEY, next);
     } catch {
-      // ignore storage write failures
+      // ignore
     }
   };
 
@@ -78,92 +76,153 @@ const Navbar = () => {
       />
 
       <nav className="navbar">
-        <div className="nav-left">
-          <Link to="/" className="nav-logo" onClick={closeMenu}>
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '32px', height: '32px' }}>
-              <defs>
-                <linearGradient id="origami-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#818cf8" />
-                  <stop offset="100%" stopColor="#4f46e5" />
-                </linearGradient>
-              </defs>
-              <rect x="4" y="4" width="24" height="24" rx="6" fill="var(--primary-glow)" />
-              <path d="M10 8V24H14V16H18C21.3137 16 24 13.3137 24 10C24 6.68629 21.3137 4 18 4H14V8H10Z" fill="url(#origami-grad)" />
-              <path d="M14 8L18 4V12L14 8Z" fill="#4338ca" />
-              <circle cx="24" cy="8" r="1.5" fill="#818cf8" />
-            </svg>
-            Pix<span className="logo-mark">Convert</span>
-          </Link>
+        <Link to="/" className="nav-logo" onClick={closeMenu}>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '32px', height: '32px' }}>
+            <defs>
+              <linearGradient id="origami-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#818cf8" />
+                <stop offset="100%" stopColor="#4f46e5" />
+              </linearGradient>
+            </defs>
+            <rect x="4" y="4" width="24" height="24" rx="6" fill="var(--primary-glow)" />
+            <path d="M10 8V24H14V16H18C21.3137 16 24 13.3137 24 10C24 6.68629 21.3137 4 18 4H14V8H10Z" fill="url(#origami-grad)" />
+            <path d="M14 8L18 4V12L14 8Z" fill="#4338ca" />
+            <circle cx="24" cy="8" r="1.5" fill="#818cf8" />
+          </svg>
+          Pix<span className="logo-mark">Convert</span>
+        </Link>
 
-          <AppMenuBar onNavigate={closeMenu} />
-        </div>
+        <div className="nav-center">
+          <ul className={`nav-links${menuOpen ? ' open' : ''}`}>
+            <li className="desktop-only">
+              <NavLink to="/" end onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Home</NavLink>
+            </li>
 
-        <ul className={`nav-links${menuOpen ? ' open' : ''}`}>
-          <li className="mobile-only">
-            <NavLink to="/" end onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>
-              Home
-            </NavLink>
-          </li>
-
-          <li className="mobile-only">
-            <button
-              className="mobile-tools-toggle"
-              onClick={() => setMobileToolsOpen((open) => !open)}
-              aria-expanded={mobileToolsOpen}
-            >
-              Tools {mobileToolsOpen ? '▴' : '▾'}
-            </button>
-            {mobileToolsOpen && (
-              <div className="mobile-tools-list">
-                <div className="mobile-tools-popular">
-                  {[
-                    { icon: '🔄', name: 'Converter', path: '/tools/converter' },
-                    { icon: '📁', name: 'Merge PDF', path: '/tools/merge-pdf' },
-                    { icon: '✂️', name: 'Split PDF', path: '/tools/split-pdf' },
-                    { icon: '🔓', name: 'Unlock PDF', path: '/tools/pdf' },
-                    { icon: '🖼️', name: 'PDF → JPG', path: '/tools/pdf-to-jpg' },
-                    { icon: '🎞️', name: 'GIF Maker', path: '/tools/gif' },
-                  ].map((tool) => (
-                    <NavLink key={tool.path} to={tool.path} onClick={closeMenu} className="mobile-popular-pill">
-                      {tool.icon} {tool.name}
-                    </NavLink>
-                  ))}
+            <li className="nav-dropdown desktop-only">
+              <span className="nav-dropdown-trigger">Tools ▾</span>
+              <div className="tools-dropdown">
+                <div className="tools-dd-popular">
+                  <span className="tools-dd-popular-label">Popular</span>
+                  <div className="tools-dd-popular-grid">
+                    <Link to="/tools/converter" className="tools-dd-pill" onClick={closeMenu}>
+                      <span className="tdi-icon">🔄</span> Converter
+                    </Link>
+                    <Link to="/tools/merge-pdf" className="tools-dd-pill" onClick={closeMenu}>
+                      <span className="tdi-icon">📁</span> Merge PDF
+                    </Link>
+                    <Link to="/tools/split-pdf" className="tools-dd-pill" onClick={closeMenu}>
+                      <span className="tdi-icon">✂️</span> Split PDF
+                    </Link>
+                    <Link to="/tools/pdf" className="tools-dd-pill" onClick={closeMenu}>
+                      <span className="tdi-icon">🔓</span> Unlock PDF
+                    </Link>
+                    <Link to="/tools/pdf-to-jpg" className="tools-dd-pill" onClick={closeMenu}>
+                      <span className="tdi-icon">🖼️</span> PDF → JPG
+                    </Link>
+                    <Link to="/tools/gif" className="tools-dd-pill" onClick={closeMenu}>
+                      <span className="tdi-icon">🎞️</span> GIF Maker
+                    </Link>
+                  </div>
                 </div>
 
-                {toolsData.map((category) => {
-                  const active = category.items.filter((item) => !item.comingSoon);
-                  if (!active.length) return null;
+                <div className="tools-dropdown-grid">
+                  {toolsData.map((category, index) => {
+                    const active = category.items.filter((item) => !item.comingSoon);
+                    if (!active.length) return null;
 
-                  return (
-                    <div key={category.category} className="mobile-tools-cat">
-                      <h4>{category.category}</h4>
-                      {active.map((item) => (
-                        <NavLink key={item.path} to={item.path} onClick={closeMenu}>
-                          {item.icon} {item.name}
-                          {item.isNew && <span className="badge badge-new" style={{ marginLeft: 'auto' }}>New</span>}
-                        </NavLink>
-                      ))}
-                    </div>
-                  );
-                })}
+                    return (
+                      <div key={index} className="tools-dropdown-group">
+                        <span className="tools-dropdown-label">{category.category}</span>
+                        {active.map((item) => (
+                          <Link key={item.path} to={item.path} className="tools-dropdown-item" onClick={closeMenu}>
+                            <span className="tdi-icon">{item.icon}</span>
+                            <span className="tdi-name">
+                              {item.name}
+                              {item.isNew && <span className="badge badge-new">New</span>}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
 
-                <Link to="/tools" onClick={closeMenu} className="mobile-browse-all">
-                  Browse all tools →
-                </Link>
+                <div className="tools-dropdown-footer">
+                  <Link to="/tools" className="tools-dropdown-browse" onClick={closeMenu}>Browse all tools →</Link>
+                </div>
               </div>
-            )}
-          </li>
+            </li>
 
-          <li className="mobile-only">
-            <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>About</NavLink>
-          </li>
-          <li className="mobile-only">
-            <NavLink to="/privacy" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Privacy</NavLink>
-          </li>
-          <li className="mobile-only">
-            <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Contact</NavLink>
-          </li>
-        </ul>
+            <li className="desktop-only">
+              <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>About</NavLink>
+            </li>
+            <li className="desktop-only">
+              <NavLink to="/privacy" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Privacy</NavLink>
+            </li>
+            <li className="desktop-only">
+              <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Contact</NavLink>
+            </li>
+
+            <li className="mobile-only">
+              <NavLink to="/" end onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Home</NavLink>
+            </li>
+            <li className="mobile-only">
+              <button
+                className="mobile-tools-toggle"
+                onClick={() => setMobileToolsOpen((open) => !open)}
+                aria-expanded={mobileToolsOpen}
+              >
+                Tools {mobileToolsOpen ? '▴' : '▾'}
+              </button>
+              {mobileToolsOpen && (
+                <div className="mobile-tools-list">
+                  <div className="mobile-tools-popular">
+                    {[
+                      { icon: '🔄', name: 'Converter', path: '/tools/converter' },
+                      { icon: '📁', name: 'Merge PDF', path: '/tools/merge-pdf' },
+                      { icon: '✂️', name: 'Split PDF', path: '/tools/split-pdf' },
+                      { icon: '🔓', name: 'Unlock PDF', path: '/tools/pdf' },
+                      { icon: '🖼️', name: 'PDF → JPG', path: '/tools/pdf-to-jpg' },
+                      { icon: '🎞️', name: 'GIF Maker', path: '/tools/gif' },
+                    ].map((tool) => (
+                      <NavLink key={tool.path} to={tool.path} onClick={closeMenu} className="mobile-popular-pill">
+                        {tool.icon} {tool.name}
+                      </NavLink>
+                    ))}
+                  </div>
+                  {toolsData.map((category) => {
+                    const active = category.items.filter((item) => !item.comingSoon);
+                    if (!active.length) return null;
+                    return (
+                      <div key={category.category} className="mobile-tools-cat">
+                        <h4>{category.category}</h4>
+                        {active.map((item) => (
+                          <NavLink key={item.path} to={item.path} onClick={closeMenu}>
+                            {item.icon} {item.name}
+                            {item.isNew && <span className="badge badge-new" style={{ marginLeft: 'auto' }}>New</span>}
+                          </NavLink>
+                        ))}
+                      </div>
+                    );
+                  })}
+                  <Link to="/tools" onClick={closeMenu} className="mobile-browse-all">
+                    Browse all tools →
+                  </Link>
+                </div>
+              )}
+            </li>
+
+            <li className="mobile-only">
+              <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>About</NavLink>
+            </li>
+            <li className="mobile-only">
+              <NavLink to="/privacy" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Privacy</NavLink>
+            </li>
+            <li className="mobile-only">
+              <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Contact</NavLink>
+            </li>
+          </ul>
+        </div>
 
         <div className="nav-actions">
           <button
