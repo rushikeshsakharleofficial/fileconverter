@@ -1,0 +1,12 @@
+node_modules
+dist
+uploads
+.git
+.gitignore
+.claude
+.gemini
+.code-review-graph
+.codex
+npm-debug.log*
+Dockerfile*
+docker-compose*.yml

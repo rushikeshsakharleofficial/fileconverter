@@ -10,6 +10,7 @@ import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, 'uploads');
+const DIST_DIR = path.resolve(__dirname, 'dist');
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const PORT = process.env.PORT || 4000;
 
@@ -66,6 +67,7 @@ const upload = multer({
 });
 
 const app = express();
+app.set('trust proxy', process.env.TRUST_PROXY ? Number(process.env.TRUST_PROXY) : 1);
 
 // CORS — restrict to allowed origins
 app.use(cors({
@@ -112,6 +114,10 @@ app.use('/api/', generalLimiter);
 
 // Serve uploads folder statically
 app.use('/uploads', express.static(UPLOADS_DIR));
+
+if (fs.existsSync(DIST_DIR)) {
+  app.use(express.static(DIST_DIR));
+}
 
 // --- Path traversal protection helper ---
 const safePath = (filename) => {
@@ -227,5 +233,11 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     res.status(500).json({ error: 'Failed to send email' });
   }
 });
+
+if (fs.existsSync(DIST_DIR)) {
+  app.get(/^(?!\/api\/|\/uploads\/).*/, (req, res) => {
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+}
 
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
