@@ -40,7 +40,6 @@ const PowerpointToPdf = lazy(() => import('./components/PowerpointToPdf'));
 const ExcelToPdf = lazy(() => import('./components/ExcelToPdf'));
 const HtmlToPdf = lazy(() => import('./components/HtmlToPdf'));
 const Contact = lazy(() => import('./components/Contact'));
-const Demo = lazy(() => import('./components/ui/demo.tsx'));
 
 const PAGE_TITLES = {
   '/': 'PixConvert — Free Online PDF & Image Converter',

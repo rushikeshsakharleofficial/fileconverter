@@ -1,29 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { toolsData } from '../data/toolsData';
-import { DropdownNavigation } from './ui/dropdown-navigation';
-import { 
-  Wrench, 
-  FileText, 
-  RefreshCw, 
-  ShieldCheck, 
-  Layers, 
-  Scissors, 
-  Trash2, 
-  FilePlus, 
-  Layout, 
-  Maximize, 
-  FileSearch,
-  Image as ImageIcon,
-  FileDigit,
-  Globe,
-  Lock,
-  RotateCcw,
-  Hash,
-  Stamp,
-  Crop,
-  Edit3
-} from 'lucide-react';
 
 const SunIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -42,45 +19,6 @@ const MoonIcon = () => (
 );
 
 const THEME_KEY = 'pixconvert-theme';
-
-// Map toolsData categories to logical groups for the mega menu
-const CATEGORY_MAP = {
-  "Organize PDF": "Management",
-  "Optimize PDF": "Management",
-  "PDF Security": "Management",
-  "Convert to PDF": "Conversion",
-  "Convert from PDF": "Conversion",
-  "Image Conversion": "Media & Edit",
-  "Edit PDF": "Media & Edit",
-  "Media Tools": "Media & Edit",
-  "PDF Intelligence": "Media & Edit"
-};
-
-const ICON_MAP = {
-  "Merge PDF": Layers,
-  "Split PDF": Scissors,
-  "Remove Pages": Trash2,
-  "Extract Pages": FilePlus,
-  "Organize PDF": Layout,
-  "Scan to PDF": Maximize,
-  "Compress PDF": Maximize,
-  "Repair PDF": Wrench,
-  "OCR PDF": FileSearch,
-  "Universal Converter": RefreshCw,
-  "GIF Maker": ImageIcon,
-  "JPG to PDF": ImageIcon,
-  "WORD to PDF": FileText,
-  "POWERPOINT to PDF": Layout,
-  "EXCEL to PDF": FileDigit,
-  "HTML to PDF": Globe,
-  "Unlock PDF": Lock,
-  "Protect PDF": ShieldCheck,
-  "Rotate PDF": RotateCcw,
-  "Add Page Numbers": Hash,
-  "Add Watermark": Stamp,
-  "Crop PDF": Crop,
-  "Edit PDF": Edit3
-};
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -108,6 +46,7 @@ const Navbar = () => {
     const saved = (() => { try { return localStorage.getItem(THEME_KEY); } catch { return null; } })();
     const theme = saved ?? 'dark';
     document.documentElement.setAttribute('data-theme', theme);
+    // eslint-disable-next-line
     setIsDark(theme !== 'light');
   }, []);
 
@@ -116,46 +55,6 @@ const Navbar = () => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
-
-  const navItems = useMemo(() => {
-    const toolsNavItem = {
-      id: 2,
-      label: "Tools",
-      subMenus: [
-        { title: "Management", items: [] },
-        { title: "Conversion", items: [] },
-        { title: "Media & Edit", items: [] }
-      ]
-    };
-
-    toolsData.forEach(cat => {
-      const groupName = CATEGORY_MAP[cat.category] || "Media & Edit";
-      const targetSubMenu = toolsNavItem.subMenus.find(s => s.title === groupName);
-      
-      cat.items.filter(i => !i.comingSoon).forEach(item => {
-        targetSubMenu.items.push({
-          label: item.name,
-          description: item.desc,
-          path: item.path,
-          icon: ICON_MAP[item.name] || item.icon,
-          isNew: item.isNew
-        });
-      });
-    });
-
-    // Limit items per submenu to prevent too much height
-    toolsNavItem.subMenus.forEach(subMenu => {
-      subMenu.items = subMenu.items.slice(0, 8);
-    });
-
-    return [
-      { id: 1, label: "Home", link: "/" },
-      toolsNavItem,
-      { id: 3, label: "About", link: "/about" },
-      { id: 4, label: "Privacy", link: "/privacy" },
-      { id: 5, label: "Contact", link: "/contact" }
-    ];
-  }, []);
 
   return (
     <>
@@ -169,20 +68,68 @@ const Navbar = () => {
       <nav className="navbar">
         <Link to="/" className="nav-logo" onClick={closeMenu}>
           <svg viewBox="0 0 28 28" fill="none">
-            <rect x="2" y="2" width="24" height="24" rx="6" stroke="#ef4444" strokeWidth="1.8"/>
-            <path d="M8 20l4-6 3 4 2-3 3 5" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <circle cx="10" cy="10" r="2" fill="#ef4444"/>
+            <rect x="2" y="2" width="24" height="24" rx="6" stroke="var(--primary)" strokeWidth="1.8"/>
+            <path d="M8 20l4-6 3 4 2-3 3 5" stroke="var(--primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="10" cy="10" r="2" fill="var(--primary)"/>
           </svg>
           Pix<span className="logo-mark">Convert</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="desktop-only">
-          <DropdownNavigation navItems={navItems} />
-        </div>
-
         <ul className={`nav-links${menuOpen ? ' open' : ''}`}>
-          {/* Mobile links only since desktop is handled by DropdownNavigation */}
+          <li className="desktop-only">
+            <NavLink to="/" end onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Home</NavLink>
+          </li>
+          
+          {/* Desktop Tools Dropdown */}
+          <li className="nav-dropdown desktop-only">
+            <span className="nav-dropdown-trigger">Tools ▾</span>
+            <div className="tools-dropdown">
+              <div className="tools-dd-popular">
+                <span className="tools-dd-popular-label">Popular</span>
+                <div className="tools-dd-popular-grid">
+                  <Link to="/tools/converter" className="tools-dd-pill" onClick={closeMenu}>
+                    <span className="tdi-icon">🔄</span> Converter
+                  </Link>
+                  <Link to="/tools/merge-pdf" className="tools-dd-pill" onClick={closeMenu}>
+                    <span className="tdi-icon">📁</span> Merge PDF
+                  </Link>
+                  <Link to="/tools/split-pdf" className="tools-dd-pill" onClick={closeMenu}>
+                    <span className="tdi-icon">✂️</span> Split PDF
+                  </Link>
+                  <Link to="/tools/pdf" className="tools-dd-pill" onClick={closeMenu}>
+                    <span className="tdi-icon">🔓</span> Unlock PDF
+                  </Link>
+                  <Link to="/tools/pdf-to-jpg" className="tools-dd-pill" onClick={closeMenu}>
+                    <span className="tdi-icon">🖼️</span> PDF → JPG
+                  </Link>
+                  <Link to="/tools/gif" className="tools-dd-pill" onClick={closeMenu}>
+                    <span className="tdi-icon">🎞️</span> GIF Maker
+                  </Link>
+                </div>
+              </div>
+              <div className="tools-dropdown-grid">
+                {toolsData.map((cat, idx) => {
+                   const active = cat.items.filter(i => !i.comingSoon);
+                   if (!active.length) return null;
+                   return (
+                     <div key={idx} className="tools-dropdown-group">
+                       <span className="tools-dropdown-label">{cat.category}</span>
+                       {active.map(item => (
+                         <Link key={item.path} to={item.path} className="tools-dropdown-item" onClick={closeMenu}>
+                           <span className="tdi-icon">{item.icon}</span>
+                           <span className="tdi-name">{item.name} {item.isNew && <span className="badge badge-new">New</span>}</span>
+                         </Link>
+                       ))}
+                     </div>
+                   );
+                })}
+              </div>
+              <div className="tools-dropdown-footer">
+                <Link to="/tools" className="tools-dropdown-browse" onClick={closeMenu}>Browse all tools →</Link>
+              </div>
+            </div>
+          </li>
+
           <li className="mobile-only">
             <NavLink to="/" end onClick={closeMenu}
               className={({ isActive }) => isActive ? 'active' : ''}>
@@ -236,23 +183,24 @@ const Navbar = () => {
             )}
           </li>
 
+          <li className="desktop-only">
+            <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>About</NavLink>
+          </li>
+          <li className="desktop-only">
+            <NavLink to="/privacy" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Privacy</NavLink>
+          </li>
+          <li className="desktop-only">
+            <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Contact</NavLink>
+          </li>
+
           <li className="mobile-only">
-            <NavLink to="/about" onClick={closeMenu}
-              className={({ isActive }) => isActive ? 'active' : ''}>
-              About
-            </NavLink>
+            <NavLink to="/about" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>About</NavLink>
           </li>
           <li className="mobile-only">
-            <NavLink to="/privacy" onClick={closeMenu}
-              className={({ isActive }) => isActive ? 'active' : ''}>
-              Privacy
-            </NavLink>
+            <NavLink to="/privacy" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Privacy</NavLink>
           </li>
           <li className="mobile-only">
-            <NavLink to="/contact" onClick={closeMenu}
-              className={({ isActive }) => isActive ? 'active' : ''}>
-              Contact
-            </NavLink>
+            <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => isActive ? 'active' : ''}>Contact</NavLink>
           </li>
         </ul>
 
