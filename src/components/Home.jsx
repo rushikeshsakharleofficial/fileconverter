@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useRef, useCallback } from 'react';
 
+import BoxLoader from './ui/box-loader';
+
 const FEATURES = [
   { icon: '🔄', title: 'Universal Converter', desc: 'Convert between PNG, JPG, WebP, AVIF, HEIC and more - fully in-browser.', link: '/tools/converter' },
   { icon: '🎞️', title: 'GIF Maker', desc: 'Turn any sequence of images into a smooth, looping animated GIF.', link: '/tools/gif' },
@@ -9,8 +11,6 @@ const FEATURES = [
   { icon: '🖼️', title: 'PDF to JPG', desc: 'Export every PDF page as a high-quality JPG image.', link: '/tools/pdf-to-jpg' },
   { icon: '📝', title: 'PDF to Word', desc: 'Extract text from PDFs into editable .docx documents.', link: '/tools/pdf-to-word' },
 ];
-
-const CUBE_FACES = ['PDF', 'JPG', 'PNG', 'WebP', 'DOCX', 'GIF'];
 
 const TRUST = [
   'No Sign-up Required',
@@ -82,14 +82,8 @@ const Home = () => (
     <div className="hero-orb hero-orb-3" aria-hidden="true" />
 
     <div className="container fade-in">
-      <div className="hero-3d-scene" aria-hidden="true">
-        <div className="hero-cube">
-          {CUBE_FACES.map((label, i) => (
-            <div className={`hero-cube-face hero-cube-face-${i}`} key={i}>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
+      <div className="hero-3d-scene hero-loader-scene" aria-hidden="true">
+        <BoxLoader />
       </div>
 
       <div className="hero-eyebrow">✦ 100% free &amp; private - no account needed</div>

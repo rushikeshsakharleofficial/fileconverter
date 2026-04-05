@@ -1,5 +1,9 @@
 import { useState, useRef } from 'react';
 
+import PrismFluxLoader from './ui/prism-flux-loader';
+
+const UPLOAD_STATUSES = ['Uploading', 'Reading', 'Checking', 'Preparing', 'Syncing', 'Placing'];
+
 const DropZone = ({ onFiles, multiple = true, accept = 'image/*', maxFiles = 99999, label }) => {
   const [dragOver, setDragOver] = useState(false);
   const inputRef = useRef();
@@ -28,21 +32,25 @@ const DropZone = ({ onFiles, multiple = true, accept = 'image/*', maxFiles = 999
   return (
     <div
       className={`drop-zone${dragOver ? ' drag-over' : ''}`}
-      onClick={() => inputRef.current.click()}
-      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+      onClick={() => inputRef.current?.click()}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragOver(true);
+      }}
       onDragLeave={() => setDragOver(false)}
-      onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files); }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragOver(false);
+        handleFiles(e.dataTransfer.files);
+      }}
     >
       <div className="drop-zone-orb drop-zone-orb-top" aria-hidden="true" />
       <div className="drop-zone-orb drop-zone-orb-bottom" aria-hidden="true" />
       <div className="drop-zone-frame" aria-hidden="true" />
 
       <div className="drop-zone-inner">
-        <div className="drop-zone-icon-stack">
-          <div className="drop-zone-icon-main">
-            <span className="icon-upload" aria-hidden="true">↑</span>
-          </div>
-          <div className="drop-zone-icon-badge" aria-hidden="true">+</div>
+        <div className="drop-zone-loader-wrap">
+          <PrismFluxLoader size={36} speed={dragOver ? 7 : 4.5} textSize={12} statuses={UPLOAD_STATUSES} />
         </div>
 
         <div className="drop-zone-copy">
@@ -60,7 +68,10 @@ const DropZone = ({ onFiles, multiple = true, accept = 'image/*', maxFiles = 999
         type="file"
         accept={accept}
         multiple={multiple}
-        onChange={(e) => { handleFiles(e.target.files); e.target.value = ''; }}
+        onChange={(e) => {
+          handleFiles(e.target.files);
+          e.target.value = '';
+        }}
       />
     </div>
   );
