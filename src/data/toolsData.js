@@ -14,7 +14,7 @@ export const toolsData = [
       { name: "WebP to JPG", path: "/tools/webp-to-jpg", icon: "🖼️", color: "#4a90d9", desc: "Convert WebP images to JPG format for better compatibility." },
       { name: "HEIC to JPG", path: "/tools/heic-to-jpg", icon: "🖼️", color: "#4a90d9", desc: "Convert Apple's HEIC images to standard JPG format." },
       { name: "BMP to PNG", path: "/tools/bmp-to-png", icon: "🖼️", color: "#4a90d9", desc: "Convert BMP images to PNG format for web use." },
-      { name: "Photo to Markdown", path: "/tools/photo-to-markdown", icon: "📝", color: "#4a90d9", isNew: true, desc: "Extract text from photos and save as Markdown using OCR." }
+      { name: "Photo to Markdown", path: "/tools/photo-to-markdown", icon: "📝", color: "#4a90d9", desc: "Extract text from photos and save as Markdown using OCR." }
     ]
   },
   {
@@ -33,7 +33,7 @@ export const toolsData = [
     items: [
       { name: "Compress PDF", path: "/tools/compress-pdf", icon: "🗜️", color: "#27ae60", desc: "Reduce file size while optimizing for maximal PDF quality." },
       { name: "Repair PDF", path: "/tools/repair-pdf", icon: "🔧", color: "#27ae60", desc: "Repair a damaged PDF and recover data from corrupt PDF files." },
-      { name: "OCR PDF", path: "/tools/ocr-pdf", icon: "👁️", color: "#27ae60", isNew: true, desc: "Recognize and extract text from scanned PDFs into Markdown." }
+      { name: "OCR PDF", path: "/tools/ocr-pdf", icon: "👁️", color: "#27ae60", desc: "Recognize and extract text from scanned PDFs into Markdown." }
     ]
   },
   {
@@ -49,21 +49,21 @@ export const toolsData = [
   {
     category: "Convert from PDF",
     items: [
-      { name: "PDF to JPG",        path: "/tools/pdf-to-jpg",        icon: "🖼️", color: "#f39c12", isNew: true, desc: "Convert each PDF page into a JPG or extract all images contained in a PDF." },
-      { name: "PDF to WORD",       path: "/tools/pdf-to-word",       icon: "📝", color: "#2b579a", isNew: true, desc: "Easily convert your PDF files into easy to edit DOC and DOCX documents." },
-      { name: "PDF to POWERPOINT", path: "/tools/pdf-to-powerpoint", icon: "📊", color: "#d24726", isNew: true, desc: "Turn your PDF files into easy to edit PPT and PPTX slideshows." },
-      { name: "PDF to EXCEL",      path: "/tools/pdf-to-excel",      icon: "📈", color: "#217346", isNew: true, desc: "Pull data straight from PDFs into Excel spreadsheets in a few short seconds." },
-      { name: "PDF to PDF/A",      path: "/tools/pdf-to-pdf-a",      icon: "🔒", color: "#8e44ad", isNew: true, desc: "Flatten and archive your PDF for long-term preservation." }
+      { name: "PDF to JPG",        path: "/tools/pdf-to-jpg",        icon: "🖼️", color: "#f39c12", desc: "Convert each PDF page into a JPG or extract all images contained in a PDF." },
+      { name: "PDF to WORD",       path: "/tools/pdf-to-word",       icon: "📝", color: "#2b579a", desc: "Easily convert your PDF files into easy to edit DOC and DOCX documents." },
+      { name: "PDF to POWERPOINT", path: "/tools/pdf-to-powerpoint", icon: "📊", color: "#d24726", desc: "Turn your PDF files into easy to edit PPT and PPTX slideshows." },
+      { name: "PDF to EXCEL",      path: "/tools/pdf-to-excel",      icon: "📈", color: "#217346", desc: "Pull data straight from PDFs into Excel spreadsheets in a few short seconds." },
+      { name: "PDF to PDF/A",      path: "/tools/pdf-to-pdf-a",      icon: "🔒", color: "#8e44ad", desc: "Flatten and archive your PDF for long-term preservation." }
     ]
   },
   {
     category: "Edit PDF",
     items: [
-      { name: "Rotate PDF",       path: "/tools/rotate-pdf",       icon: "🔄", color: "#16a085", isNew: true, desc: "Rotate your PDFs the way you need them. Rotate multiple PDFs at once!" },
-      { name: "Add Page Numbers", path: "/tools/add-page-numbers", icon: "🔢", color: "#16a085", isNew: true, desc: "Add page numbers to your PDF documents with full customization." },
-      { name: "Add Watermark",    path: "/tools/add-watermark",    icon: "©️", color: "#16a085", isNew: true, desc: "Stamp an image or text over your PDF. Choose typography, transparency and position." },
-      { name: "Crop PDF",         path: "/tools/crop-pdf",         icon: "📐", color: "#16a085", isNew: true, desc: "Crop PDF pages to adjust margins and remove unwanted whitespace." },
-      { name: "Edit PDF",         path: "/tools/edit-pdf",         icon: "✏️", color: "#16a085", isNew: true, desc: "Add text, images, shapes or freehand annotations to a PDF document." }
+      { name: "Rotate PDF",       path: "/tools/rotate-pdf",       icon: "🔄", color: "#16a085", desc: "Rotate your PDFs the way you need them. Rotate multiple PDFs at once!" },
+      { name: "Add Page Numbers", path: "/tools/add-page-numbers", icon: "🔢", color: "#16a085", desc: "Add page numbers to your PDF documents with full customization." },
+      { name: "Add Watermark",    path: "/tools/add-watermark",    icon: "©️", color: "#16a085", desc: "Stamp an image or text over your PDF. Choose typography, transparency and position." },
+      { name: "Crop PDF",         path: "/tools/crop-pdf",         icon: "📐", color: "#16a085", desc: "Crop PDF pages to adjust margins and remove unwanted whitespace." },
+      { name: "Edit PDF",         path: "/tools/edit-pdf",         icon: "✏️", color: "#16a085", desc: "Add text, images, shapes or freehand annotations to a PDF document." }
     ]
   },
   {
