@@ -1,9 +1,8 @@
-/**
- * Standard progress UI for all tools. Use `value` 0–100 for determinate progress;
- * omit `value` (or pass null) for an indeterminate (busy) bar.
- */
-const ToolProgressBar = ({ active, label = 'Processing…', value, className = '', style: wrapStyle }) => {
+import ProcessBoxLoader from './ui/process-box-loader';
+
+const ToolProgressBar = ({ active, label = 'Processing...', value, className = '', style: wrapStyle }) => {
   if (!active) return null;
+
   const indeterminate = value == null || Number.isNaN(Number(value));
   const pct = indeterminate ? 0 : Math.min(100, Math.max(0, Math.round(Number(value))));
 
@@ -12,6 +11,10 @@ const ToolProgressBar = ({ active, label = 'Processing…', value, className = '
       className={`tool-progress-wrap fade-in ${className}`.trim()}
       style={{ marginTop: '0.85rem', ...wrapStyle }}
     >
+      <div className="tool-progress-loader">
+        <ProcessBoxLoader />
+      </div>
+
       <div
         style={{
           display: 'flex',
@@ -26,6 +29,7 @@ const ToolProgressBar = ({ active, label = 'Processing…', value, className = '
         <span>{label}</span>
         {!indeterminate && <span style={{ fontVariantNumeric: 'tabular-nums' }}>{pct}%</span>}
       </div>
+
       <div className="progress-bar" style={{ marginTop: 0 }}>
         <div
           className={`progress-fill${indeterminate ? ' animated' : ''}`}
