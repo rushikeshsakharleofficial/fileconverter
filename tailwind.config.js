@@ -25,6 +25,10 @@ export default {
         input: 'var(--border)',
         ring: 'var(--primary)',
       },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        heading: ['Outfit', 'sans-serif'],
+      },
       borderRadius: {
         lg: 'var(--radius)',
       },
