@@ -9,13 +9,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "./card.jsx";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/line-chart";
-import { Badge } from "@/components/ui/badge";
+} from "./line-chart.jsx";
+import { Badge } from "./badge.jsx";
 
 export function GlowingLineChart({ data, config, title, description, trending }) {
   return (

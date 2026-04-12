@@ -1,30 +1,10 @@
-// components/ui/donut-chart.tsx
 "use client";
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-export interface DonutChartSegment {
-  value: number;
-  color: string;
-  label: string;
-  [key: string]: any;
-}
-
-interface DonutChartProps extends React.HTMLAttributes<HTMLDivElement> {
-  data: DonutChartSegment[];
-  totalValue?: number;
-  size?: number;
-  strokeWidth?: number;
-  animationDuration?: number;
-  animationDelayPerSegment?: number;
-  highlightOnHover?: boolean;
-  centerContent?: React.ReactNode;
-  onSegmentHover?: (segment: DonutChartSegment | null) => void;
-}
-
-const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
+const DonutChart = React.forwardRef(
   (
     {
       data,
@@ -41,8 +21,7 @@ const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
     },
     ref
   ) => {
-    const [hoveredSegment, setHoveredSegment] =
-      React.useState<DonutChartSegment | null>(null);
+    const [hoveredSegment, setHoveredSegment] = React.useState(null);
 
     const internalTotalValue = React.useMemo(
       () =>

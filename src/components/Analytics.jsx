@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { GlowingLineChart } from './ui/glowing-line-chart';
-import { DonutChart } from './ui/donut-chart';
+import { GlowingLineChart } from './ui/glowing-line-chart.jsx';
+import { DonutChart } from './ui/donut-chart.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
