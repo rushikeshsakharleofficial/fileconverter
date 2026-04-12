@@ -1,8 +1,15 @@
 {
-  "name": "fileconverter-new",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@rushikeshsakharleofficial/fileconverter-new",
+  "private": false,
+  "version": "1.0.1",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rushikeshsakharleofficial/fileconverter.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "dev": "vite",
     "server": "node server.js",
