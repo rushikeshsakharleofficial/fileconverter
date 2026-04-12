@@ -150,11 +150,19 @@ const Analytics = () => {
     Array.from(toolSet).forEach((tool, i) => {
       config[tool] = {
         label: toolLabel(tool),
-        color: `hsl(${(i * 137.5) % 360}, 70%, 50%)`, // deterministic spread colors
+        color: `hsl(${(i * 137.5) % 360}, 70%, 50%)`,
       };
     });
     return config;
   }, [stats]);
+
+  // Debug: log data to console
+  useEffect(() => {
+    if (chartData.length) {
+      console.log('Analytics Chart Data:', chartData);
+      console.log('Analytics Chart Config:', chartConfig);
+    }
+  }, [chartData, chartConfig]);
 
   return (
     <section>

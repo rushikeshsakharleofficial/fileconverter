@@ -78,9 +78,10 @@ const aggregateStats = (period) => {
   else { bucketMs = 30 * 24 * 60 * 60 * 1000; bucketCount = 12; }                  // monthly buckets
 
   const buckets = Array.from({ length: bucketCount }, (_, i) => {
+    // We want the last bucket to end exactly at "now"
     const start = now - (bucketCount - i) * bucketMs;
     const end = start + bucketMs;
-    const bucketEvents = filtered.filter(e => e.ts >= start && e.ts < end);
+    const bucketEvents = filtered.filter(e => e.ts >= start && (i === bucketCount - 1 ? e.ts <= end : e.ts < end));
     
     // Per-tool breakdown
     const tools = {};

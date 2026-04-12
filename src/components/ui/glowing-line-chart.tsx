@@ -36,24 +36,22 @@ export function GlowingLineChart({ data, config, title, description, trending })
         <CardDescription>{description || "Usage trends"}</CardDescription>
       </CardHeader>
       <CardContent className="px-0">
-        <ChartContainer config={config} className="h-[300px] w-full">
+        <ChartContainer config={config} className="h-[300px] w-full min-h-[300px]">
           <LineChart
-            accessibilityLayer
             data={data}
             margin={{
-              left: 12,
-              right: 12,
-              top: 12,
-              bottom: 12,
+              left: 20,
+              right: 20,
+              top: 20,
+              bottom: 20,
             }}
           >
-            <CartesianGrid vertical={false} strokeOpacity={0.1} />
+            <CartesianGrid vertical={false} strokeOpacity={0.2} />
             <XAxis
               dataKey="label"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value}
             />
             <ChartTooltip
               cursor={false}
@@ -63,10 +61,12 @@ export function GlowingLineChart({ data, config, title, description, trending })
               <Line
                 key={key}
                 dataKey={key}
-                type="bump"
+                type="monotone"
                 stroke={config[key].color}
-                dot={false}
-                strokeWidth={2.5}
+                dot={{ r: 4, fill: config[key].color, strokeWidth: 0 }}
+                activeDot={{ r: 6 }}
+                strokeWidth={3}
+                connectNulls={true}
                 filter="url(#rainbow-line-glow)"
               />
             ))}
@@ -78,7 +78,7 @@ export function GlowingLineChart({ data, config, title, description, trending })
                 width="140%"
                 height="140%"
               >
-                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feGaussianBlur stdDeviation="4" result="blur" />
                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
               </filter>
             </defs>
