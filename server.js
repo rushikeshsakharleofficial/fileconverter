@@ -80,13 +80,22 @@ const aggregateStats = (period) => {
   const buckets = Array.from({ length: bucketCount }, (_, i) => {
     const start = now - (bucketCount - i) * bucketMs;
     const end = start + bucketMs;
+    const bucketEvents = filtered.filter(e => e.ts >= start && e.ts < end);
+    
+    // Per-tool breakdown
+    const tools = {};
+    bucketEvents.forEach(e => {
+      tools[e.tool] = (tools[e.tool] || 0) + 1;
+    });
+
     return {
       label: new Date(start).toLocaleDateString('en-US', period === 'daily'
         ? { hour: '2-digit' }
         : period === 'yearly'
           ? { month: 'short' }
           : { month: 'short', day: 'numeric' }),
-      count: filtered.filter(e => e.ts >= start && e.ts < end).length,
+      count: bucketEvents.length,
+      tools,
     };
   });
 
