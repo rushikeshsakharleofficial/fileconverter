@@ -7,7 +7,20 @@ logs/
 .env
 .env.local
 .worktrees/
-.claude/settings.local.json
+
+# AI Tooling & Internal metadata
+.claude/
+.gemini/
 .codex/
-.gemini/CODE_GRAPH.md
+AGENTS.md
+GEMINI.md
+caveman/
+
+# Data & Scripts
+data/*
+!data/.gitkeep
+extract_metadata.js
+*.mjs
+
+# Documentation / Internal Plans
 docs/superpowers/
