@@ -6,3 +6,4 @@ logs/
 .env
 .env.local
 .worktrees/
+.claude/settings.local.json

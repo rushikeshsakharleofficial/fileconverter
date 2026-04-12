@@ -163,77 +163,79 @@ const App = () => (
   <BrowserRouter>
     <ScrollToTop />
     <Navbar />
-    <ErrorBoundary>
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tools" element={<Tools />}>
-            <Route path="converter" element={<LazyRoute><UniversalConverter /></LazyRoute>} />
-            <Route path="gif" element={<LazyRoute><GifMaker /></LazyRoute>} />
-            <Route path="pdf" element={<LazyRoute><PdfUnlocker /></LazyRoute>} />
-            <Route path="pdf-lock" element={<LazyRoute><PdfLocker /></LazyRoute>} />
+    <main className="app-content">
+      <ErrorBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/tools" element={<Tools />}>
+              <Route path="converter" element={<LazyRoute><UniversalConverter /></LazyRoute>} />
+              <Route path="gif" element={<LazyRoute><GifMaker /></LazyRoute>} />
+              <Route path="pdf" element={<LazyRoute><PdfUnlocker /></LazyRoute>} />
+              <Route path="pdf-lock" element={<LazyRoute><PdfLocker /></LazyRoute>} />
 
-            {/* Image Conversion */}
-            <Route path="jpg-to-png" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/png" /></LazyRoute>} />
-            <Route path="png-to-jpg" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/jpeg" /></LazyRoute>} />
-            <Route path="webp-to-jpg" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/jpeg" /></LazyRoute>} />
-            <Route path="heic-to-jpg" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/jpeg" /></LazyRoute>} />
-            <Route path="bmp-to-png" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/png" /></LazyRoute>} />
-            <Route path="photo-to-markdown" element={<LazyRoute><OcrTool type="image" /></LazyRoute>} />
+              {/* Image Conversion */}
+              <Route path="jpg-to-png" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/png" /></LazyRoute>} />
+              <Route path="png-to-jpg" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/jpeg" /></LazyRoute>} />
+              <Route path="webp-to-jpg" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/jpeg" /></LazyRoute>} />
+              <Route path="heic-to-jpg" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/jpeg" /></LazyRoute>} />
+              <Route path="bmp-to-png" element={<LazyRoute><UniversalConverter defaultOutputFormat="image/png" /></LazyRoute>} />
+              <Route path="photo-to-markdown" element={<LazyRoute><OcrTool type="image" /></LazyRoute>} />
 
-            {/* Convert from PDF tools */}
-            <Route path="pdf-to-jpg" element={<LazyRoute><PdfToJpg /></LazyRoute>} />
-            <Route path="pdf-to-word" element={<LazyRoute><PdfToWord /></LazyRoute>} />
-            <Route path="pdf-to-powerpoint" element={<LazyRoute><PdfToPowerpoint /></LazyRoute>} />
-            <Route path="pdf-to-excel" element={<LazyRoute><PdfToExcel /></LazyRoute>} />
-            <Route path="pdf-to-pdf-a" element={<LazyRoute><PdfToPdfA /></LazyRoute>} />
+              {/* Convert from PDF tools */}
+              <Route path="pdf-to-jpg" element={<LazyRoute><PdfToJpg /></LazyRoute>} />
+              <Route path="pdf-to-word" element={<LazyRoute><PdfToWord /></LazyRoute>} />
+              <Route path="pdf-to-powerpoint" element={<LazyRoute><PdfToPowerpoint /></LazyRoute>} />
+              <Route path="pdf-to-excel" element={<LazyRoute><PdfToExcel /></LazyRoute>} />
+              <Route path="pdf-to-pdf-a" element={<LazyRoute><PdfToPdfA /></LazyRoute>} />
 
-            {/* Organize PDF */}
-            <Route path="merge-pdf" element={<LazyRoute><MergePdf /></LazyRoute>} />
-            <Route path="split-pdf" element={<LazyRoute><SplitPdf /></LazyRoute>} />
-            <Route path="remove-pages" element={<LazyRoute><RemovePages /></LazyRoute>} />
-            <Route path="extract-pages" element={<LazyRoute><ExtractPages /></LazyRoute>} />
-            <Route path="organize-pdf" element={<LazyRoute><OrganizePdf /></LazyRoute>} />
-            <Route path="scan-to-pdf" element={<LazyRoute><ScanToPdf /></LazyRoute>} />
+              {/* Organize PDF */}
+              <Route path="merge-pdf" element={<LazyRoute><MergePdf /></LazyRoute>} />
+              <Route path="split-pdf" element={<LazyRoute><SplitPdf /></LazyRoute>} />
+              <Route path="remove-pages" element={<LazyRoute><RemovePages /></LazyRoute>} />
+              <Route path="extract-pages" element={<LazyRoute><ExtractPages /></LazyRoute>} />
+              <Route path="organize-pdf" element={<LazyRoute><OrganizePdf /></LazyRoute>} />
+              <Route path="scan-to-pdf" element={<LazyRoute><ScanToPdf /></LazyRoute>} />
 
-            {/* Optimize PDF */}
-            <Route path="compress-pdf" element={<LazyRoute><ComingSoon /></LazyRoute>} />
-            <Route path="repair-pdf" element={<LazyRoute><ComingSoon /></LazyRoute>} />
-            <Route path="ocr-pdf" element={<LazyRoute><OcrTool type="pdf" /></LazyRoute>} />
+              {/* Optimize PDF */}
+              <Route path="compress-pdf" element={<LazyRoute><ComingSoon /></LazyRoute>} />
+              <Route path="repair-pdf" element={<LazyRoute><ComingSoon /></LazyRoute>} />
+              <Route path="ocr-pdf" element={<LazyRoute><OcrTool type="pdf" /></LazyRoute>} />
 
-            {/* Convert to PDF */}
-            <Route path="jpg-to-pdf" element={<LazyRoute><JpgToPdf /></LazyRoute>} />
-            <Route path="word-to-pdf" element={<LazyRoute><WordToPdf /></LazyRoute>} />
-            <Route path="powerpoint-to-pdf" element={<LazyRoute><PowerpointToPdf /></LazyRoute>} />
-            <Route path="excel-to-pdf" element={<LazyRoute><ExcelToPdf /></LazyRoute>} />
-            <Route path="html-to-pdf" element={<LazyRoute><HtmlToPdf /></LazyRoute>} />
+              {/* Convert to PDF */}
+              <Route path="jpg-to-pdf" element={<LazyRoute><JpgToPdf /></LazyRoute>} />
+              <Route path="word-to-pdf" element={<LazyRoute><WordToPdf /></LazyRoute>} />
+              <Route path="powerpoint-to-pdf" element={<LazyRoute><PowerpointToPdf /></LazyRoute>} />
+              <Route path="excel-to-pdf" element={<LazyRoute><ExcelToPdf /></LazyRoute>} />
+              <Route path="html-to-pdf" element={<LazyRoute><HtmlToPdf /></LazyRoute>} />
 
-            {/* Edit PDF */}
-            <Route path="rotate-pdf" element={<LazyRoute><RotatePdf /></LazyRoute>} />
-            <Route path="add-page-numbers" element={<LazyRoute><AddPageNumbers /></LazyRoute>} />
-            <Route path="add-watermark" element={<LazyRoute><AddWatermark /></LazyRoute>} />
-            <Route path="crop-pdf" element={<LazyRoute><CropPdf /></LazyRoute>} />
-            <Route path="edit-pdf" element={<LazyRoute><EditPdf /></LazyRoute>} />
+              {/* Edit PDF */}
+              <Route path="rotate-pdf" element={<LazyRoute><RotatePdf /></LazyRoute>} />
+              <Route path="add-page-numbers" element={<LazyRoute><AddPageNumbers /></LazyRoute>} />
+              <Route path="add-watermark" element={<LazyRoute><AddWatermark /></LazyRoute>} />
+              <Route path="crop-pdf" element={<LazyRoute><CropPdf /></LazyRoute>} />
+              <Route path="edit-pdf" element={<LazyRoute><EditPdf /></LazyRoute>} />
 
-            {/* PDF Security */}
-            <Route path="sign-pdf" element={<LazyRoute><SignPdf /></LazyRoute>} />
-            <Route path="redact-pdf" element={<LazyRoute><RedactPdf /></LazyRoute>} />
-            <Route path="compare-pdf" element={<LazyRoute><ComparePdf /></LazyRoute>} />
+              {/* PDF Security */}
+              <Route path="sign-pdf" element={<LazyRoute><SignPdf /></LazyRoute>} />
+              <Route path="redact-pdf" element={<LazyRoute><RedactPdf /></LazyRoute>} />
+              <Route path="compare-pdf" element={<LazyRoute><ComparePdf /></LazyRoute>} />
 
-            {/* PDF Intelligence */}
-            <Route path="ai-summarizer" element={<LazyRoute><ComingSoon /></LazyRoute>} />
-            <Route path="translate-pdf" element={<LazyRoute><ComingSoon /></LazyRoute>} />
+              {/* PDF Intelligence */}
+              <Route path="ai-summarizer" element={<LazyRoute><ComingSoon /></LazyRoute>} />
+              <Route path="translate-pdf" element={<LazyRoute><ComingSoon /></LazyRoute>} />
 
+              <Route path="*" element={<NotFound />} />
+            </Route>
+            <Route path="/analytics" element={<LazyRoute><Analytics /></LazyRoute>} />
+            <Route path="/about" element={<About />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<NotFound />} />
-          </Route>
-          <Route path="/analytics" element={<LazyRoute><Analytics /></LazyRoute>} />
-          <Route path="/about" element={<About />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </ErrorBoundary>
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
+    </main>
     <Footer />
   </BrowserRouter>
 );
