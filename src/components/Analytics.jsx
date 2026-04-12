@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { GlowingLineChart } from './ui/glowing-line-chart';
+import { DonutChart } from './ui/donut-chart';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 const PERIODS = [
   { key: 'daily', label: 'Day' },
@@ -50,25 +53,89 @@ const TOOL_LABELS = {
 
 const toolLabel = (slug) => TOOL_LABELS[slug] || slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-const TopToolsList = ({ tools }) => {
+const TopToolsDonut = ({ tools }) => {
+  const [hoveredSegment, setHoveredSegment] = useState(null);
+
   if (!tools.length) {
     return <p className="analytics-empty">No usage data yet. Process some files to see stats!</p>;
   }
-  const maxCount = tools[0]?.count || 1;
+
+  const total = tools.reduce((sum, t) => sum + t.count, 0);
+
+  const donutData = tools.map((t, i) => ({
+    value: t.count,
+    label: toolLabel(t.tool),
+    color: `hsl(${(i * 137.5) % 360}, 70%, 55%)`,
+    slug: t.tool
+  }));
+
+  const activeSegment = hoveredSegment;
+  const displayValue = activeSegment?.value ?? total;
+  const displayLabel = activeSegment?.label ?? "Total Uses";
+  const displayPercentage = activeSegment ? (activeSegment.value / total) * 100 : 100;
 
   return (
-    <div className="top-tools-list">
-      {tools.map((t, i) => (
-        <div key={t.tool} className="top-tool-row">
-          <span className="top-tool-rank">#{i + 1}</span>
-          <span className="top-tool-name">{toolLabel(t.tool)}</span>
-          <div className="top-tool-bar-wrap">
-            <div className="top-tool-bar"
-              style={{ width: `${(t.count / maxCount) * 100}%` }} />
+    <div className="flex flex-col md:flex-row items-center justify-around gap-8 py-4">
+      <div className="relative flex items-center justify-center">
+        <DonutChart
+          data={donutData}
+          size={240}
+          strokeWidth={28}
+          onSegmentHover={setHoveredSegment}
+          centerContent={
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={displayLabel}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center justify-center text-center p-2"
+              >
+                <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-wider mb-1 line-clamp-1">
+                  {displayLabel}
+                </p>
+                <p className="text-3xl font-black text-foreground tabular-nums">
+                  {displayValue}
+                </p>
+                {activeSegment && (
+                  <p className="text-sm font-bold text-primary mt-1">
+                    {displayPercentage.toFixed(1)}%
+                  </p>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          }
+        />
+      </div>
+
+      <div className="flex flex-col gap-2 min-w-[200px] flex-1">
+        {donutData.slice(0, 6).map((segment) => (
+          <div
+            key={segment.slug}
+            className={cn(
+              "flex items-center justify-between p-2 rounded-lg transition-all border border-transparent",
+              activeSegment?.label === segment.label ? "bg-white/5 border-white/10" : "opacity-80"
+            )}
+            onMouseEnter={() => setHoveredSegment(segment)}
+            onMouseLeave={() => setHoveredSegment(null)}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="w-3 h-3 rounded-full shrink-0"
+                style={{ backgroundColor: segment.color, boxShadow: `0 0 10px ${segment.color}44` }}
+              />
+              <span className="text-xs font-semibold truncate max-w-[140px]">{segment.label}</span>
+            </div>
+            <span className="text-xs font-mono font-bold">{segment.value}</span>
           </div>
-          <span className="top-tool-count">{t.count.toLocaleString()}</span>
-        </div>
-      ))}
+        ))}
+        {donutData.length > 6 && (
+          <p className="text-[10px] text-muted-foreground text-center mt-2 italic">
+            + {donutData.length - 6} more tools
+          </p>
+        )}
+      </div>
     </div>
   );
 };
@@ -225,7 +292,7 @@ const Analytics = () => {
               {loading ? (
                 <div className="analytics-loading">Loading…</div>
               ) : (
-                <TopToolsList tools={stats?.topTools || []} />
+                <TopToolsDonut tools={stats?.topTools || []} />
               )}
             </div>
           </div>
