@@ -82,7 +82,6 @@ const PAGE_TITLES = {
   '/tools/bmp-to-png': 'BMP to PNG — PixConvert',
   '/tools/photo-to-markdown': 'Photo to Markdown (OCR) — PixConvert',
   '/tools/ocr-pdf': 'OCR PDF — PixConvert',
-  '/tools/demo': 'Demo — PixConvert',
   '/tools/sign-pdf': 'Sign PDF — PixConvert',
   '/tools/redact-pdf': 'Redact PDF — PixConvert',
   '/tools/compare-pdf': 'Compare PDF — PixConvert',
