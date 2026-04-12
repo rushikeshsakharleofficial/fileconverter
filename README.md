@@ -7,12 +7,16 @@ PixConvert is a free, privacy-focused, and open-source file conversion ecosystem
 ### 1. Interactive "How It Works" Timeline
 A custom-built, drag-based timeline that guides users through the simple 3-step process. Features fluid animations and real-time step previews.
 
+**Visualizing the Process:**
+![Timeline Sequence](./docs/screenshots/timeline-step-1.png)
+*(Interactive drag-to-explore interface)*
+
 | Dark Mode | Light Mode |
 | :---: | :---: |
 | ![Home Timeline Dark](./docs/screenshots/home-timeline-dark.png) | ![Home Timeline Light](./docs/screenshots/home-timeline-light.png) |
 
-### 2. Real-time Analytics Dashboard
-Powered by Server-Sent Events (SSE), the dashboard provides live metrics on file processing trends and top-performing tools without requiring a page refresh.
+### 2. Real-time Analytics Dashboard (Per-File Tracking)
+Powered by Server-Sent Events (SSE), the dashboard provides live metrics on file processing trends. Every single file processed counts toward the real-time global counter.
 
 | Analytics Dashboard (Dark) | Data Visualization |
 | :---: | :---: |
@@ -71,19 +75,6 @@ The repo includes a portable production container setup:
    ```bash
    npm run server
    ```
-
-### Run in Docker
-
-```bash
-docker compose up --build -d
-```
-
-### CPU/RAM Autoscaling
-
-Run the host-side autoscaler to manage replicas dynamically:
-```bash
-npm run autoscale:docker
-```
 
 ---
 

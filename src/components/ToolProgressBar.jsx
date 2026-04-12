@@ -2,18 +2,18 @@ import { useEffect, useRef } from 'react';
 import ProcessBoxLoader from './ui/process-box-loader';
 import { trackToolUsage } from '../utils/trackUsage';
 
-const ToolProgressBar = ({ active, label = 'Processing...', value, className = '', style: wrapStyle }) => {
+const ToolProgressBar = ({ active, label = 'Processing...', value, count = 1, className = '', style: wrapStyle }) => {
   const trackedRef = useRef(false);
 
   useEffect(() => {
     if (active && !trackedRef.current) {
       trackedRef.current = true;
       const toolSlug = window.location.pathname.split('/').pop() || 'unknown';
-      trackToolUsage(toolSlug);
+      trackToolUsage(toolSlug, count);
     } else if (!active) {
       trackedRef.current = false; // reset for next run
     }
-  }, [active]);
+  }, [active, count]);
 
   if (!active) return null;
 

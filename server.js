@@ -327,16 +327,27 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
 });
 
 // --- Metrics API ---
-// POST /api/metrics/track — record a tool usage event
+// POST /api/metrics/track — record tool usage event(s)
 app.post('/api/metrics/track', (req, res) => {
-  const { tool } = req.body;
+  const { tool, count = 1 } = req.body;
   if (!tool || typeof tool !== 'string' || tool.length > 100) {
     return res.status(400).json({ error: 'Invalid tool name' });
   }
-  const event = { tool: tool.toLowerCase().trim(), ts: Date.now() };
-  metricsEvents.push(event);
+  
+  const num = Math.max(1, Math.min(1000, Number(count) || 1));
+  const now = Date.now();
+  
+  for (let i = 0; i < num; i++) {
+    metricsEvents.push({ tool: tool.toLowerCase().trim(), ts: now });
+  }
+  
   saveMetrics();
-  broadcastSSE({ type: 'new_event', event, totalAllTime: metricsEvents.length });
+  broadcastSSE({ 
+    type: 'new_event', 
+    tool: tool.toLowerCase().trim(),
+    count: num,
+    totalAllTime: metricsEvents.length 
+  });
   res.json({ ok: true });
 });
 

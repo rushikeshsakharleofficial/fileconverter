@@ -12,7 +12,7 @@ const Footer = () => {
 
   return (
     <footer className="mt-20 mb-8 px-4 max-w-6xl mx-auto font-sans -rotate-1">
-      <div className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-white/5 shadow-xl mx-auto px-6 md:px-12 py-12 flex flex-col gap-12 overflow-hidden text-slate-900 dark:text-slate-100">
+      <div className="relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-white/5 shadow-xl mx-auto px-6 md:px-12 py-12 flex flex-col gap-12 text-slate-900 dark:text-slate-100">
         {/* Tapes */}
         <div className="hidden md:block absolute -top-4 -left-8 w-[80px] h-[36px] scale-75 opacity-90">
           {tape}

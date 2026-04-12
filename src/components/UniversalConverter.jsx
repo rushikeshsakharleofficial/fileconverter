@@ -374,6 +374,7 @@ const UniversalConverter = ({ defaultOutputFormat = null }) => {
             active={!!progressStage}
             label={progressStage || 'Processing…'}
             value={progressValue}
+            count={files.length}
             className="fade-in visible"
             style={{ margin: '1rem 0' }}
           />
