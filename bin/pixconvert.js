@@ -15,6 +15,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const serverPath = join(__dirname, '..', 'server.js');
 
+const LOG_DIR = '/var/log/pixconvert';
+const SERVICE_PATH = '/etc/systemd/system/pixconvert.service';
+
 const args = process.argv.slice(2);
 
 if (args.includes('--install')) {
@@ -22,6 +25,8 @@ if (args.includes('--install')) {
 } else if (args.includes('--uninstall')) {
   uninstall();
 } else {
+  // Try creating log dir silently (works if running as root or dir already exists)
+  try { mkdirSync(LOG_DIR, { recursive: true }); } catch {}
   await import(serverPath);
 }
 
@@ -31,8 +36,6 @@ function install() {
     process.exit(1);
   }
 
-  const LOG_DIR = '/var/log/pixconvert';
-  const SERVICE_PATH = '/etc/systemd/system/pixconvert.service';
   const nodeBin = process.execPath;
 
   // Create log directory
