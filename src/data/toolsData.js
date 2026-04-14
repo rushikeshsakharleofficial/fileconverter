@@ -63,7 +63,7 @@ export const toolsData = [
       { name: "Add Page Numbers", path: "/tools/add-page-numbers", icon: "🔢", color: "#16a085", desc: "Add page numbers to your PDF documents with full customization." },
       { name: "Add Watermark",    path: "/tools/add-watermark",    icon: "©️", color: "#16a085", desc: "Stamp an image or text over your PDF. Choose typography, transparency and position." },
       { name: "Crop PDF",         path: "/tools/crop-pdf",         icon: "📐", color: "#16a085", desc: "Crop PDF pages to adjust margins and remove unwanted whitespace." },
-      { name: "Edit PDF",         path: "/tools/edit-pdf",         icon: "✏️", color: "#16a085", desc: "Add text, images, shapes or freehand annotations to a PDF document." }
+      { name: "Edit PDF",         path: "/tools/edit-pdf",         icon: "✏️", color: "#16a085", isNew: true, desc: "Live PDF editor — add text, highlights, underlines, strikethrough & sticky notes. Save directly as PDF." }
     ]
   },
   {

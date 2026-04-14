@@ -119,6 +119,9 @@ const Navbar = () => {
                     <Link to="/tools/gif" className="tools-dd-pill" onClick={closeMenu}>
                       <span className="tdi-icon">🎞️</span> GIF Maker
                     </Link>
+                    <Link to="/tools/edit-pdf" className="tools-dd-pill active" onClick={closeMenu}>
+                      <span className="tdi-icon">✏️</span> Edit PDF <span className="badge badge-new">New</span>
+                    </Link>
                   </div>
                 </div>
 
@@ -197,9 +200,11 @@ const Navbar = () => {
                       { icon: '🔓', name: 'Unlock PDF', path: '/tools/pdf' },
                       { icon: '🖼️', name: 'PDF → JPG', path: '/tools/pdf-to-jpg' },
                       { icon: '🎞️', name: 'GIF Maker', path: '/tools/gif' },
+                      { icon: '✏️', name: 'Edit PDF', path: '/tools/edit-pdf', isNew: true },
                     ].map((tool) => (
                       <NavLink key={tool.path} to={tool.path} onClick={closeMenu} className="mobile-popular-pill">
                         {tool.icon} {tool.name}
+                        {tool.isNew && <span className="badge badge-new" style={{ marginLeft: '4px' }}>New</span>}
                       </NavLink>
                     ))}
                   </div>
