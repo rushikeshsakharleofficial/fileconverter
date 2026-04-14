@@ -56,22 +56,26 @@
 
     <div class="section">
       <h2>Quick Start</h2>
-      <pre><code># Compress a PDF
+      <pre><code># Compress a PDF (options as form fields)
 curl -X POST http://localhost:4000/api/v1/compress-pdf \
-  -F "files=@document.pdf" -o compressed.pdf
+  -F "files=@document.pdf" \
+  -F "quality=medium" -o compressed.pdf
 
 # Merge two PDFs
 curl -X POST http://localhost:4000/api/v1/merge-pdf \
-  -F "files=@doc1.pdf" -F "files=@doc2.pdf" -o merged.pdf
+  -F "files=@doc1.pdf" \
+  -F "files=@doc2.pdf" -o merged.pdf
 
-# Convert from URL
+# Convert from URL (options in JSON body)
 curl -X POST http://localhost:4000/api/v1/compress-pdf \
   -H "Content-Type: application/json" \
-  -d '{"urls":["https://example.com/doc.pdf"]}' -o result.pdf
+  -d '{"urls":["https://example.com/doc.pdf"],"quality":"low"}' \
+  -o result.pdf
 
 # Get download URL instead of binary
 curl -X POST "http://localhost:4000/api/v1/compress-pdf?output=url" \
-  -F "files=@document.pdf"</code></pre>
+  -F "files=@document.pdf" \
+  -F "quality=medium"</code></pre>
     </div>
 
     <div class="section">

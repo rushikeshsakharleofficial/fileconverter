@@ -2,57 +2,57 @@ import { useState } from 'react';
 
 const TOOLS = [
   { cat: 'Organize PDF', items: [
-    { path: '/merge-pdf', desc: 'Merge multiple PDFs into one', input: 'Multiple PDF files', curl: 'curl -X POST /api/v1/merge-pdf -F "files=@doc1.pdf" -F "files=@doc2.pdf" -o merged.pdf', params: [] },
-    { path: '/split-pdf', desc: 'Split PDF into pages', input: 'Single PDF', curl: 'curl -X POST "/api/v1/split-pdf?pages=1-3,5" -F "files=@doc.pdf" -o split.pdf', params: [{ name: 'pages', type: 'string', req: false, desc: 'Page range (e.g. "1-3,5,8"). Omit to split all.' }] },
-    { path: '/remove-pages', desc: 'Remove pages from PDF', input: 'Single PDF', curl: 'curl -X POST "/api/v1/remove-pages?pages=2,4" -F "files=@doc.pdf" -o result.pdf', params: [{ name: 'pages', type: 'string', req: true, desc: 'Pages to remove (e.g. "2,4,6")' }] },
-    { path: '/extract-pages', desc: 'Extract specific pages', input: 'Single PDF', curl: 'curl -X POST "/api/v1/extract-pages?pages=1-3" -F "files=@doc.pdf" -o extracted.pdf', params: [{ name: 'pages', type: 'string', req: true, desc: 'Pages to extract (e.g. "1-3,5")' }] },
-    { path: '/organize-pdf', desc: 'Reorder PDF pages', input: 'Single PDF', curl: 'curl -X POST /api/v1/organize-pdf -F "files=@doc.pdf" -F "order=[2,0,1]" -o reordered.pdf', params: [{ name: 'order', type: 'JSON array', req: true, desc: '0-based page indices in desired order' }] },
-    { path: '/scan-to-pdf', desc: 'Convert scanned images to PDF', input: 'Image file(s)', curl: 'curl -X POST /api/v1/scan-to-pdf -F "files=@scan1.jpg" -F "files=@scan2.jpg" -o scanned.pdf', params: [] },
+    { path: '/merge-pdf', desc: 'Merge multiple PDFs into one', input: 'Multiple PDF files', curl: 'curl -X POST /api/v1/merge-pdf \\\n  -F "files=@doc1.pdf" \\\n  -F "files=@doc2.pdf" -o merged.pdf', params: [] },
+    { path: '/split-pdf', desc: 'Split PDF into pages', input: 'Single PDF', curl: 'curl -X POST /api/v1/split-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "pages=1-3,5" -o split.pdf', params: [{ name: 'pages', type: 'string', req: false, desc: 'Page range (e.g. "1-3,5,8"). Omit to split all.' }] },
+    { path: '/remove-pages', desc: 'Remove pages from PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/remove-pages \\\n  -F "files=@doc.pdf" \\\n  -F "pages=2,4" -o result.pdf', params: [{ name: 'pages', type: 'string', req: true, desc: 'Pages to remove (e.g. "2,4,6")' }] },
+    { path: '/extract-pages', desc: 'Extract specific pages', input: 'Single PDF', curl: 'curl -X POST /api/v1/extract-pages \\\n  -F "files=@doc.pdf" \\\n  -F "pages=1-3" -o extracted.pdf', params: [{ name: 'pages', type: 'string', req: true, desc: 'Pages to extract (e.g. "1-3,5")' }] },
+    { path: '/organize-pdf', desc: 'Reorder PDF pages', input: 'Single PDF', curl: 'curl -X POST /api/v1/organize-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "order=[2,0,1]" -o reordered.pdf', params: [{ name: 'order', type: 'JSON array', req: true, desc: '0-based page indices in desired order' }] },
+    { path: '/scan-to-pdf', desc: 'Convert scanned images to PDF', input: 'Image file(s)', curl: 'curl -X POST /api/v1/scan-to-pdf \\\n  -F "files=@scan1.jpg" \\\n  -F "files=@scan2.jpg" -o scanned.pdf', params: [] },
   ]},
   { cat: 'Optimize PDF', items: [
-    { path: '/compress-pdf', desc: 'Compress PDF file size', input: 'Single PDF', curl: 'curl -X POST "/api/v1/compress-pdf?quality=medium" -F "files=@doc.pdf" -o small.pdf', params: [{ name: 'quality', type: 'string', req: false, desc: 'low | medium (default) | high' }] },
-    { path: '/repair-pdf', desc: 'Repair damaged PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/repair-pdf -F "files=@broken.pdf" -o fixed.pdf', params: [] },
-    { path: '/ocr-pdf', desc: 'OCR text recognition', input: 'Single PDF/Image', curl: 'curl -X POST "/api/v1/ocr-pdf?lang=eng" -F "files=@scan.pdf" -o searchable.pdf', params: [{ name: 'lang', type: 'string', req: false, desc: 'Language code (eng, fra, deu, spa...)' }, { name: 'format', type: 'string', req: false, desc: 'pdf (default) | txt' }] },
+    { path: '/compress-pdf', desc: 'Compress PDF file size', input: 'Single PDF', curl: 'curl -X POST /api/v1/compress-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "quality=medium" -o small.pdf', params: [{ name: 'quality', type: 'string', req: false, desc: 'low | medium (default) | high' }] },
+    { path: '/repair-pdf', desc: 'Repair damaged PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/repair-pdf \\\n  -F "files=@broken.pdf" -o fixed.pdf', params: [] },
+    { path: '/ocr-pdf', desc: 'OCR text recognition', input: 'Single PDF/Image', curl: 'curl -X POST /api/v1/ocr-pdf \\\n  -F "files=@scan.pdf" \\\n  -F "lang=eng" \\\n  -F "format=pdf" -o searchable.pdf', params: [{ name: 'lang', type: 'string', req: false, desc: 'Language code (eng, fra, deu, spa...)' }, { name: 'format', type: 'string', req: false, desc: 'pdf (default) | txt' }] },
   ]},
   { cat: 'Convert to PDF', items: [
-    { path: '/jpg-to-pdf', desc: 'Convert images to PDF', input: 'Image file(s)', curl: 'curl -X POST /api/v1/jpg-to-pdf -F "files=@photo.jpg" -o output.pdf', params: [{ name: 'orientation', type: 'string', req: false, desc: 'portrait (default) | landscape' }, { name: 'margin', type: 'number', req: false, desc: 'Margin in px (default: 0)' }] },
-    { path: '/word-to-pdf', desc: 'Word document to PDF', input: '.doc/.docx', curl: 'curl -X POST /api/v1/word-to-pdf -F "files=@doc.docx" -o output.pdf', params: [] },
-    { path: '/powerpoint-to-pdf', desc: 'PowerPoint to PDF', input: '.ppt/.pptx', curl: 'curl -X POST /api/v1/powerpoint-to-pdf -F "files=@slides.pptx" -o output.pdf', params: [] },
-    { path: '/excel-to-pdf', desc: 'Excel spreadsheet to PDF', input: '.xls/.xlsx', curl: 'curl -X POST /api/v1/excel-to-pdf -F "files=@sheet.xlsx" -o output.pdf', params: [] },
-    { path: '/html-to-pdf', desc: 'HTML page to PDF', input: 'HTML file or URL', curl: 'curl -X POST /api/v1/html-to-pdf -H "Content-Type: application/json" -d \'{"htmlUrl":"https://example.com"}\' -o page.pdf', params: [{ name: 'htmlUrl', type: 'string', req: false, desc: 'URL to convert (alt to file upload)' }, { name: 'format', type: 'string', req: false, desc: 'A4 (default) | Letter' }, { name: 'landscape', type: 'boolean', req: false, desc: 'Landscape mode (default: false)' }] },
+    { path: '/jpg-to-pdf', desc: 'Convert images to PDF', input: 'Image file(s)', curl: 'curl -X POST /api/v1/jpg-to-pdf \\\n  -F "files=@photo.jpg" \\\n  -F "orientation=portrait" \\\n  -F "margin=0" -o output.pdf', params: [{ name: 'orientation', type: 'string', req: false, desc: 'portrait (default) | landscape' }, { name: 'margin', type: 'number', req: false, desc: 'Margin in px (default: 0)' }] },
+    { path: '/word-to-pdf', desc: 'Word document to PDF', input: '.doc/.docx', curl: 'curl -X POST /api/v1/word-to-pdf \\\n  -F "files=@doc.docx" -o output.pdf', params: [] },
+    { path: '/powerpoint-to-pdf', desc: 'PowerPoint to PDF', input: '.ppt/.pptx', curl: 'curl -X POST /api/v1/powerpoint-to-pdf \\\n  -F "files=@slides.pptx" -o output.pdf', params: [] },
+    { path: '/excel-to-pdf', desc: 'Excel spreadsheet to PDF', input: '.xls/.xlsx', curl: 'curl -X POST /api/v1/excel-to-pdf \\\n  -F "files=@sheet.xlsx" -o output.pdf', params: [] },
+    { path: '/html-to-pdf', desc: 'HTML page to PDF', input: 'HTML file or URL', curl: 'curl -X POST /api/v1/html-to-pdf \\\n  -H "Content-Type: application/json" \\\n  -d \'{"htmlUrl":"https://example.com","format":"A4"}\' \\\n  -o page.pdf', params: [{ name: 'htmlUrl', type: 'string', req: false, desc: 'URL to convert (alt to file upload)' }, { name: 'format', type: 'string', req: false, desc: 'A4 (default) | Letter' }, { name: 'landscape', type: 'boolean', req: false, desc: 'Landscape mode (default: false)' }] },
   ]},
   { cat: 'Convert from PDF', items: [
-    { path: '/pdf-to-jpg', desc: 'PDF pages to JPG images', input: 'Single PDF', curl: 'curl -X POST "/api/v1/pdf-to-jpg?dpi=200" -F "files=@doc.pdf" -o pages.zip', params: [{ name: 'dpi', type: 'number', req: false, desc: '72-600 (default: 150)' }, { name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
-    { path: '/pdf-to-word', desc: 'PDF to Word document', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-word -F "files=@doc.pdf" -o output.docx', params: [] },
-    { path: '/pdf-to-powerpoint', desc: 'PDF to PowerPoint', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-powerpoint -F "files=@doc.pdf" -o output.pptx', params: [] },
-    { path: '/pdf-to-excel', desc: 'PDF to Excel spreadsheet', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-excel -F "files=@doc.pdf" -o output.xlsx', params: [] },
-    { path: '/pdf-to-pdfa', desc: 'PDF to PDF/A archive format', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-pdfa -F "files=@doc.pdf" -o archived.pdf', params: [] },
+    { path: '/pdf-to-jpg', desc: 'PDF pages to JPG images', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-jpg \\\n  -F "files=@doc.pdf" \\\n  -F "dpi=200" \\\n  -F "quality=90" -o pages.zip', params: [{ name: 'dpi', type: 'number', req: false, desc: '72-600 (default: 150)' }, { name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
+    { path: '/pdf-to-word', desc: 'PDF to Word document', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-word \\\n  -F "files=@doc.pdf" -o output.docx', params: [] },
+    { path: '/pdf-to-powerpoint', desc: 'PDF to PowerPoint', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-powerpoint \\\n  -F "files=@doc.pdf" -o output.pptx', params: [] },
+    { path: '/pdf-to-excel', desc: 'PDF to Excel spreadsheet', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-excel \\\n  -F "files=@doc.pdf" -o output.xlsx', params: [] },
+    { path: '/pdf-to-pdfa', desc: 'PDF to PDF/A archive format', input: 'Single PDF', curl: 'curl -X POST /api/v1/pdf-to-pdfa \\\n  -F "files=@doc.pdf" -o archived.pdf', params: [] },
   ]},
   { cat: 'Edit PDF', items: [
-    { path: '/rotate-pdf', desc: 'Rotate PDF pages', input: 'Single PDF', curl: 'curl -X POST "/api/v1/rotate-pdf?angle=90" -F "files=@doc.pdf" -o rotated.pdf', params: [{ name: 'angle', type: 'number', req: true, desc: '90 | 180 | 270' }, { name: 'pages', type: 'string', req: false, desc: 'Specific pages (default: all)' }] },
-    { path: '/add-page-numbers', desc: 'Add page numbers to PDF', input: 'Single PDF', curl: 'curl -X POST "/api/v1/add-page-numbers?position=bottom-center" -F "files=@doc.pdf" -o numbered.pdf', params: [{ name: 'position', type: 'string', req: false, desc: 'Position (default: bottom-center)' }, { name: 'startFrom', type: 'number', req: false, desc: 'Starting number (default: 1)' }, { name: 'format', type: 'string', req: false, desc: 'e.g. "Page {n} of {total}"' }] },
-    { path: '/add-watermark', desc: 'Add text or image watermark', input: 'PDF + optional image', curl: 'curl -X POST "/api/v1/add-watermark?text=DRAFT&opacity=0.3" -F "files=@doc.pdf" -o watermarked.pdf', params: [{ name: 'text', type: 'string', req: false, desc: 'Watermark text' }, { name: 'opacity', type: 'number', req: false, desc: '0.01-1 (default: 0.3)' }, { name: 'rotation', type: 'number', req: false, desc: 'Degrees (default: -45)' }] },
-    { path: '/crop-pdf', desc: 'Crop PDF margins', input: 'Single PDF', curl: 'curl -X POST "/api/v1/crop-pdf?top=50&bottom=50" -F "files=@doc.pdf" -o cropped.pdf', params: [{ name: 'top/right/bottom/left', type: 'number', req: false, desc: 'Crop in points' }] },
-    { path: '/edit-pdf', desc: 'Apply annotations to PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/edit-pdf -F "files=@doc.pdf" -F \'annotations=[{"type":"text","pageIndex":0,"x":100,"y":100,"content":"Hello"}]\' -o edited.pdf', params: [{ name: 'annotations', type: 'JSON array', req: true, desc: 'Annotation objects' }] },
+    { path: '/rotate-pdf', desc: 'Rotate PDF pages', input: 'Single PDF', curl: 'curl -X POST /api/v1/rotate-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "angle=90" \\\n  -F "pages=1-3" -o rotated.pdf', params: [{ name: 'angle', type: 'number', req: true, desc: '90 | 180 | 270' }, { name: 'pages', type: 'string', req: false, desc: 'Specific pages (default: all)' }] },
+    { path: '/add-page-numbers', desc: 'Add page numbers to PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/add-page-numbers \\\n  -F "files=@doc.pdf" \\\n  -F "position=bottom-center" \\\n  -F "startFrom=1" -o numbered.pdf', params: [{ name: 'position', type: 'string', req: false, desc: 'Position (default: bottom-center)' }, { name: 'startFrom', type: 'number', req: false, desc: 'Starting number (default: 1)' }, { name: 'format', type: 'string', req: false, desc: 'e.g. "Page {n} of {total}"' }] },
+    { path: '/add-watermark', desc: 'Add text or image watermark', input: 'PDF + optional image', curl: 'curl -X POST /api/v1/add-watermark \\\n  -F "files=@doc.pdf" \\\n  -F "text=DRAFT" \\\n  -F "opacity=0.3" -o watermarked.pdf', params: [{ name: 'text', type: 'string', req: false, desc: 'Watermark text' }, { name: 'opacity', type: 'number', req: false, desc: '0.01-1 (default: 0.3)' }, { name: 'rotation', type: 'number', req: false, desc: 'Degrees (default: -45)' }] },
+    { path: '/crop-pdf', desc: 'Crop PDF margins', input: 'Single PDF', curl: 'curl -X POST /api/v1/crop-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "top=50" \\\n  -F "bottom=50" -o cropped.pdf', params: [{ name: 'top/right/bottom/left', type: 'number', req: false, desc: 'Crop in points' }] },
+    { path: '/edit-pdf', desc: 'Apply annotations to PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/edit-pdf \\\n  -F "files=@doc.pdf" \\\n  -F \'annotations=[{"type":"text","pageIndex":0,"x":100,"y":100,"content":"Hello"}]\' \\\n  -o edited.pdf', params: [{ name: 'annotations', type: 'JSON array', req: true, desc: 'Annotation objects' }] },
   ]},
   { cat: 'PDF Security', items: [
-    { path: '/unlock-pdf', desc: 'Remove PDF password protection', input: 'Single PDF', curl: 'curl -X POST /api/v1/unlock-pdf -F "files=@locked.pdf" -o unlocked.pdf', params: [{ name: 'password', type: 'string', req: false, desc: 'PDF password' }] },
-    { path: '/lock-pdf', desc: 'Password-protect a PDF', input: 'Single PDF', curl: 'curl -X POST "/api/v1/lock-pdf?password=secret123" -F "files=@doc.pdf" -o locked.pdf', params: [{ name: 'password', type: 'string', req: true, desc: 'Password to set' }] },
-    { path: '/sign-pdf', desc: 'Add signature image to PDF', input: 'PDF + signature image', curl: 'curl -X POST /api/v1/sign-pdf -F "files=@doc.pdf" -F "files=@signature.png" -o signed.pdf', params: [{ name: 'page', type: 'number', req: false, desc: 'Page number (default: last)' }, { name: 'x/y/width/height', type: 'number', req: false, desc: 'Signature position' }] },
-    { path: '/redact-pdf', desc: 'Redact sensitive regions', input: 'Single PDF', curl: 'curl -X POST /api/v1/redact-pdf -F "files=@doc.pdf" -F \'regions=[{"page":1,"x":100,"y":200,"w":300,"h":50}]\' -o redacted.pdf', params: [{ name: 'regions', type: 'JSON array', req: true, desc: '{page, x, y, w, h} objects' }] },
-    { path: '/compare-pdf', desc: 'Visual PDF comparison', input: 'Two PDF files', curl: 'curl -X POST /api/v1/compare-pdf -F "files=@v1.pdf" -F "files=@v2.pdf" -o diff.zip', params: [] },
+    { path: '/unlock-pdf', desc: 'Remove PDF password protection', input: 'Single PDF', curl: 'curl -X POST /api/v1/unlock-pdf \\\n  -F "files=@locked.pdf" \\\n  -F "password=mypass" -o unlocked.pdf', params: [{ name: 'password', type: 'string', req: false, desc: 'PDF password' }] },
+    { path: '/lock-pdf', desc: 'Password-protect a PDF', input: 'Single PDF', curl: 'curl -X POST /api/v1/lock-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "password=secret123" -o locked.pdf', params: [{ name: 'password', type: 'string', req: true, desc: 'Password to set' }] },
+    { path: '/sign-pdf', desc: 'Add signature image to PDF', input: 'PDF + signature image', curl: 'curl -X POST /api/v1/sign-pdf \\\n  -F "files=@doc.pdf" \\\n  -F "files=@signature.png" \\\n  -F "page=1" -o signed.pdf', params: [{ name: 'page', type: 'number', req: false, desc: 'Page number (default: last)' }, { name: 'x/y/width/height', type: 'number', req: false, desc: 'Signature position' }] },
+    { path: '/redact-pdf', desc: 'Redact sensitive regions', input: 'Single PDF', curl: 'curl -X POST /api/v1/redact-pdf \\\n  -F "files=@doc.pdf" \\\n  -F \'regions=[{"page":1,"x":100,"y":200,"w":300,"h":50}]\' \\\n  -o redacted.pdf', params: [{ name: 'regions', type: 'JSON array', req: true, desc: '{page, x, y, w, h} objects' }] },
+    { path: '/compare-pdf', desc: 'Visual PDF comparison', input: 'Two PDF files', curl: 'curl -X POST /api/v1/compare-pdf \\\n  -F "files=@v1.pdf" \\\n  -F "files=@v2.pdf" -o diff.zip', params: [] },
   ]},
   { cat: 'Image Conversion', items: [
-    { path: '/jpg-to-png', desc: 'JPG to PNG', input: 'Image', curl: 'curl -X POST /api/v1/jpg-to-png -F "files=@photo.jpg" -o photo.png', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
-    { path: '/png-to-jpg', desc: 'PNG to JPG', input: 'Image', curl: 'curl -X POST /api/v1/png-to-jpg -F "files=@image.png" -o image.jpg', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
-    { path: '/webp-to-jpg', desc: 'WebP to JPG', input: 'Image', curl: 'curl -X POST /api/v1/webp-to-jpg -F "files=@image.webp" -o image.jpg', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
-    { path: '/heic-to-jpg', desc: 'HEIC to JPG', input: 'Image', curl: 'curl -X POST /api/v1/heic-to-jpg -F "files=@photo.heic" -o photo.jpg', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
-    { path: '/bmp-to-png', desc: 'BMP to PNG', input: 'Image', curl: 'curl -X POST /api/v1/bmp-to-png -F "files=@image.bmp" -o image.png', params: [] },
-    { path: '/photo-to-markdown', desc: 'OCR image to Markdown', input: 'Image', curl: 'curl -X POST /api/v1/photo-to-markdown -F "files=@photo.jpg" -o result.md', params: [{ name: 'lang', type: 'string', req: false, desc: 'Language (default: eng)' }] },
+    { path: '/jpg-to-png', desc: 'JPG to PNG', input: 'Image', curl: 'curl -X POST /api/v1/jpg-to-png \\\n  -F "files=@photo.jpg" \\\n  -F "quality=90" -o photo.png', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
+    { path: '/png-to-jpg', desc: 'PNG to JPG', input: 'Image', curl: 'curl -X POST /api/v1/png-to-jpg \\\n  -F "files=@image.png" \\\n  -F "quality=90" -o image.jpg', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
+    { path: '/webp-to-jpg', desc: 'WebP to JPG', input: 'Image', curl: 'curl -X POST /api/v1/webp-to-jpg \\\n  -F "files=@image.webp" \\\n  -F "quality=90" -o image.jpg', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
+    { path: '/heic-to-jpg', desc: 'HEIC to JPG', input: 'Image', curl: 'curl -X POST /api/v1/heic-to-jpg \\\n  -F "files=@photo.heic" \\\n  -F "quality=90" -o photo.jpg', params: [{ name: 'quality', type: 'number', req: false, desc: '1-100 (default: 90)' }] },
+    { path: '/bmp-to-png', desc: 'BMP to PNG', input: 'Image', curl: 'curl -X POST /api/v1/bmp-to-png \\\n  -F "files=@image.bmp" -o image.png', params: [] },
+    { path: '/photo-to-markdown', desc: 'OCR image to Markdown', input: 'Image', curl: 'curl -X POST /api/v1/photo-to-markdown \\\n  -F "files=@photo.jpg" \\\n  -F "lang=eng" -o result.md', params: [{ name: 'lang', type: 'string', req: false, desc: 'Language (default: eng)' }] },
   ]},
   { cat: 'Media', items: [
-    { path: '/convert', desc: 'Universal format converter', input: 'Any supported file', curl: 'curl -X POST "/api/v1/convert?to=png" -F "files=@image.jpg" -o result.png', params: [{ name: 'to', type: 'string', req: true, desc: 'Target format (jpg, png, pdf, docx...)' }] },
-    { path: '/gif', desc: 'Create animated GIF', input: 'Multiple images', curl: 'curl -X POST "/api/v1/gif?delay=300" -F "files=@frame1.jpg" -F "files=@frame2.jpg" -o anim.gif', params: [{ name: 'delay', type: 'number', req: false, desc: 'Frame delay ms (default: 500)' }, { name: 'loop', type: 'boolean', req: false, desc: 'Loop (default: true)' }] },
+    { path: '/convert', desc: 'Universal format converter', input: 'Any supported file', curl: 'curl -X POST /api/v1/convert \\\n  -F "files=@image.jpg" \\\n  -F "to=png" -o result.png', params: [{ name: 'to', type: 'string', req: true, desc: 'Target format (jpg, png, pdf, docx...)' }] },
+    { path: '/gif', desc: 'Create animated GIF', input: 'Multiple images', curl: 'curl -X POST /api/v1/gif \\\n  -F "files=@frame1.jpg" \\\n  -F "files=@frame2.jpg" \\\n  -F "delay=300" -o anim.gif', params: [{ name: 'delay', type: 'number', req: false, desc: 'Frame delay ms (default: 500)' }, { name: 'loop', type: 'boolean', req: false, desc: 'Loop (default: true)' }] },
   ]},
 ];
 
@@ -166,19 +166,22 @@ const ApiDocs = () => {
               <h3>File Upload</h3>
               <CodeBlock code={`curl -X POST /api/v1/compress-pdf \\
   -F "files=@document.pdf" \\
+  -F "quality=medium" \\
   -o compressed.pdf`} />
             </div>
             <div className="api-quickstart-card">
               <h3>URL Input</h3>
               <CodeBlock code={`curl -X POST /api/v1/compress-pdf \\
   -H "Content-Type: application/json" \\
-  -d '{"urls":["https://example.com/doc.pdf"]}' \\
+  -d '{"urls":["https://example.com/doc.pdf"],
+       "quality":"medium"}' \\
   -o result.pdf`} />
             </div>
             <div className="api-quickstart-card">
               <h3>Get Download URL</h3>
               <CodeBlock code={`curl -X POST "/api/v1/compress-pdf?output=url" \\
-  -F "files=@document.pdf"
+  -F "files=@document.pdf" \\
+  -F "quality=low"
 
 # Returns: {"success":true,"url":"/downloads/abc.pdf",...}`} />
             </div>
