@@ -31,10 +31,11 @@ npm install -g pixconvert
 **2. Install systemd service (auto-creates log dirs)**
 
 ```bash
-sudo $(which pixconvert) --install
+sudo npm install -g pixconvert
+sudo /usr/local/bin/pixconvert --install
 ```
 
-> `sudo pixconvert` won't work — sudo resets PATH. Use `$(which pixconvert)` to pass the full path.
+> Always use the full path `/usr/local/bin/pixconvert` with sudo — `sudo pixconvert` resets PATH and may pick up the wrong binary.
 
 This will:
 - Create `/var/log/pixconvert/` for logs
