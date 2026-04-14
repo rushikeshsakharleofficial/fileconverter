@@ -118,15 +118,16 @@ Set these environment variables before starting (or edit the systemd service fil
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PORT` | `3001` | API server port |
+| `API_PORT` | `3000` | REST API port (`/api/v1`) |
+| `FRONTEND_PORT` | `8080` | Frontend UI port |
 | `API_RATE_LIMIT` | `10` | Requests per minute per IP |
 | `FILE_SIZE_LIMIT_MB` | `50` | Max upload size in MB |
 | `FILE_TTL_HOURS` | `1` | Hours before temp files are deleted |
 
-Example with custom port:
+Example with custom ports:
 
 ```bash
-PORT=8080 npx pixconvert
+API_PORT=3000 FRONTEND_PORT=8080 npx pixconvert
 ```
 
 ---

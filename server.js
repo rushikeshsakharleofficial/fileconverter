@@ -14,7 +14,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOADS_DIR = path.resolve(__dirname, 'uploads');
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
-const PORT = process.env.PORT || 4000;
+const API_PORT = parseInt(process.env.API_PORT || process.env.PORT || 3000, 10);
+const FRONTEND_PORT = parseInt(process.env.FRONTEND_PORT || 8080, 10);
 const METRICS_FILE = path.resolve(__dirname, 'data', 'metrics.json');
 const TWO_YEARS_MS = 2 * 365.25 * 24 * 60 * 60 * 1000;
 
@@ -406,4 +407,7 @@ if (fs.existsSync(DIST_DIR)) {
   });
 }
 
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(API_PORT, () => console.log(`API server running at http://localhost:${API_PORT}`));
+if (FRONTEND_PORT !== API_PORT) {
+  app.listen(FRONTEND_PORT, () => console.log(`Frontend running at http://localhost:${FRONTEND_PORT}`));
+}

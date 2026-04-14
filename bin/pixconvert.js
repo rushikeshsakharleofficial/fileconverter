@@ -56,7 +56,8 @@ Restart=on-failure
 RestartSec=5
 
 # Environment — edit as needed
-Environment=PORT=3001
+Environment=API_PORT=3000
+Environment=FRONTEND_PORT=8080
 Environment=API_RATE_LIMIT=10
 Environment=FILE_SIZE_LIMIT_MB=50
 Environment=FILE_TTL_HOURS=1
