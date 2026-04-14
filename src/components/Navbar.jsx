@@ -176,6 +176,9 @@ const Navbar = () => {
               <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Contact</NavLink>
             </li>
             <li className="desktop-only">
+              <NavLink to="/api" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>API</NavLink>
+            </li>
+            <li className="desktop-only">
               <NavLink to="/analytics" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Analytics</NavLink>
             </li>
 
@@ -238,6 +241,9 @@ const Navbar = () => {
             </li>
             <li className="mobile-only">
               <NavLink to="/contact" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Contact</NavLink>
+            </li>
+            <li className="mobile-only">
+              <NavLink to="/api" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>API</NavLink>
             </li>
             <li className="mobile-only">
               <NavLink to="/analytics" onClick={closeMenu} className={({ isActive }) => (isActive ? 'active' : '')}>Analytics</NavLink>

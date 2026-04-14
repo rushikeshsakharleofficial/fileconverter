@@ -44,6 +44,7 @@ const SignPdf = lazy(() => import('./components/SignPdf'));
 const RedactPdf = lazy(() => import('./components/RedactPdf'));
 const ComparePdf = lazy(() => import('./components/ComparePdf'));
 const Analytics = lazy(() => import('./components/Analytics'));
+const ApiDocs = lazy(() => import('./components/ApiDocs'));
 
 const PAGE_TITLES = {
   '/': 'PixConvert — Free Online PDF & Image Converter',
@@ -51,6 +52,7 @@ const PAGE_TITLES = {
   '/about': 'About — PixConvert',
   '/privacy': 'Privacy Policy — PixConvert',
   '/contact': 'Contact Us — PixConvert',
+  '/api': 'API Documentation — PixConvert',
   '/tools/converter': 'Universal Image Converter — PixConvert',
   '/tools/gif': 'GIF Maker — PixConvert',
   '/tools/pdf': 'Unlock PDF — PixConvert',
@@ -227,6 +229,7 @@ const App = () => (
 
               <Route path="*" element={<NotFound />} />
             </Route>
+            <Route path="/api" element={<LazyRoute><ApiDocs /></LazyRoute>} />
             <Route path="/analytics" element={<LazyRoute><Analytics /></LazyRoute>} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
