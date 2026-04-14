@@ -10,6 +10,9 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
+  "bin": {
+    "pixconvert": "./bin/pixconvert.js"
+  },
   "scripts": {
     "dev": "vite",
     "server": "node server.js",
