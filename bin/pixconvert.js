@@ -32,7 +32,8 @@ if (args.includes('--install')) {
 
 function install() {
   if (process.getuid && process.getuid() !== 0) {
-    console.error('Error: --install requires root. Run: sudo npx pixconvert --install');
+    console.error('Error: --install requires root.');
+    console.error(`Run: sudo ${process.execPath} ${__filename} --install`);
     process.exit(1);
   }
 
@@ -91,7 +92,8 @@ PixConvert service installed successfully!
 
 function uninstall() {
   if (process.getuid && process.getuid() !== 0) {
-    console.error('Error: --uninstall requires root. Run: sudo npx pixconvert --uninstall');
+    console.error('Error: --uninstall requires root.');
+    console.error(`Run: sudo ${process.execPath} ${__filename} --uninstall`);
     process.exit(1);
   }
 
