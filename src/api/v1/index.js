@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { apiRateLimiter } from './middleware/rateLimiter.js';
+import { apiRateLimiter, processLimiter } from './middleware/rateLimiter.js';
 
 // Organize PDF
 import mergePdf from './tools/organize/mergePdf.js';
@@ -50,6 +50,23 @@ const router = Router();
 
 // Apply rate limiter to all v1 routes
 router.use(apiRateLimiter);
+
+// Apply process limiter to heavy conversion endpoints (10 processes per 30 seconds)
+const conversionEndpoints = [
+  '/merge-pdf', '/split-pdf', '/remove-pages', '/extract-pages', '/organize-pdf', '/scan-to-pdf',
+  '/compress-pdf', '/repair-pdf', '/ocr-pdf',
+  '/jpg-to-pdf', '/word-to-pdf', '/powerpoint-to-pdf', '/excel-to-pdf', '/html-to-pdf',
+  '/pdf-to-jpg', '/pdf-to-word', '/pdf-to-powerpoint', '/pdf-to-excel', '/pdf-to-pdfa',
+  '/rotate-pdf', '/add-page-numbers', '/add-watermark', '/crop-pdf', '/edit-pdf',
+  '/unlock-pdf', '/lock-pdf', '/sign-pdf', '/redact-pdf', '/compare-pdf',
+  '/jpg-to-png', '/png-to-jpg', '/webp-to-jpg', '/heic-to-jpg', '/bmp-to-png',
+  '/convert', '/gif'
+];
+
+// Apply process limiter to each conversion endpoint
+conversionEndpoints.forEach(endpoint => {
+  router.use(endpoint, processLimiter);
+});
 
 // Health check
 router.get('/health', (req, res) => {
