@@ -3,6 +3,7 @@ import { GlowingLineChart } from './ui/glowing-line-chart.jsx';
 import { DonutChart } from './ui/donut-chart.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { getLocalUsageStats } from '../utils/trackUsage';
 
 const PERIODS = [
   { key: 'daily', label: 'Day' },
@@ -145,18 +146,37 @@ const Analytics = () => {
   const [stats, setStats] = useState(null);
   const [liveTotal, setLiveTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [dataSource, setDataSource] = useState('api');
   const esRef = useRef(null);
 
   const fetchStats = useCallback(async (p) => {
     try {
       const res = await fetch(`/api/metrics/stats?period=${p}`);
       if (res.ok) {
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          throw new Error('Metrics API returned non-JSON response');
+        }
         const data = await res.json();
         setStats(data);
         setLiveTotal(data.totalAllTime);
+        setDataSource('api');
+        return;
       }
     } catch {
-      // silent
+      // Static deployments may not have the Express metrics API.
+    }
+
+    try {
+      const localStats = getLocalUsageStats(p);
+      setStats(localStats);
+      setLiveTotal(localStats.totalAllTime);
+      setDataSource('local');
+    } catch {
+      const emptyStats = getLocalUsageStats(p);
+      setStats(emptyStats);
+      setLiveTotal(emptyStats.totalAllTime);
+      setDataSource('local');
     } finally {
       setLoading(false);
     }
@@ -193,6 +213,16 @@ const Analytics = () => {
 
     return () => {
       if (es) es.close();
+    };
+  }, [period, fetchStats]);
+
+  useEffect(() => {
+    const onLocalMetrics = () => fetchStats(period);
+    window.addEventListener('pixconvert:metrics-updated', onLocalMetrics);
+    window.addEventListener('storage', onLocalMetrics);
+    return () => {
+      window.removeEventListener('pixconvert:metrics-updated', onLocalMetrics);
+      window.removeEventListener('storage', onLocalMetrics);
     };
   }, [period, fetchStats]);
 
@@ -243,7 +273,7 @@ const Analytics = () => {
           <div className="analytics-live-badge">
             <span className="live-dot" />
             <span className="live-count">{liveTotal.toLocaleString()}</span>
-            <span className="live-label">files processed</span>
+            <span className="live-label">{dataSource === 'local' ? 'files processed here' : 'files processed'}</span>
           </div>
         </div>
 
